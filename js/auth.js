@@ -14,8 +14,8 @@ function verifyPassword() {
     const password = passwordInput.value.trim();
     console.log("Entered password:", password);
 
-    // 硬编码的密码
-    const correctPassword = 'whs641812';
+    // 更正后的硬编码密码
+    const correctPassword = 'wxl641812';
 
     if (password === correctPassword) {
         console.log("Password correct, switching to login container");
@@ -26,6 +26,7 @@ function verifyPassword() {
         passwordInput.value = ''; // 清空密码输入框
     } else {
         console.log("Password incorrect");
+        passwordError.textContent = '密码错误，请重试！';
         passwordError.style.display = 'block';
         passwordInput.value = '';
         passwordInput.focus();
