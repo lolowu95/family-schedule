@@ -1,25 +1,38 @@
 import { verifyPassword, login, logout } from './auth.js';
-import { addSchedule, loadSchedules, loadLogs, filterSchedules, switchView, toggleComplete, deleteSchedule } from './schedule.js';
-import { openDatePicker, closeDatePicker, changeModalMonth, confirmRangeSelection, changeMonth, renderCalendar } from './calendar.js';
+import { loadSchedules, loadLogs, addSchedule, toggleComplete, deleteSchedule, filterSchedules, switchView } from './schedule.js';
+import { openCustomDatePicker, closeCustomDatePicker, changeModalMonth, confirmRangeSelection, changeMonth } from './calendar.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+    const passwordContainer = document.getElementById('passwordContainer');
+    const loginContainer = document.getElementById('loginContainer');
+
+    if (!passwordContainer || !loginContainer) {
+        console.error("未找到 passwordContainer 或 loginContainer 元素");
+        alert("页面加载出错，请刷新后重试！");
+        return;
+    }
+
+    if (localStorage.getItem('accessVerified') === 'true') {
+        console.log("已验证，显示登录界面");
+        passwordContainer.style.display = 'none';
+        loginContainer.style.display = 'block';
+    } else {
+        console.log("未验证，显示密码输入界面");
+    }
+
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowEnd = new Date(tomorrow);
-    tomorrowEnd.setDate(tomorrowEnd.getDate() + 1);
-
+    tomorrowEnd.setHours(tomorrowEnd.getHours() + 1);
     document.getElementById('datetimeDisplay').value = `${tomorrow.toLocaleString('zh-CN', {
-        year: 'numeric', month: '2-digit', day: '2-digit'
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
     })} 至 ${tomorrowEnd.toLocaleString('zh-CN', {
-        year: 'numeric', month: '2-digit', day: '2-digit'
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
     })}`;
     document.getElementById('datetimeDisplay').dataset.start = tomorrow.toISOString();
     document.getElementById('datetimeDisplay').dataset.end = tomorrowEnd.toISOString();
-
-    if (localStorage.getItem('accessVerified') === 'true') {
-        document.getElementById('passwordContainer').style.display = 'none';
-        document.getElementById('loginContainer').style.display = 'block';
-    }
 
     // 绑定事件
     document.getElementById('verifyButton').addEventListener('click', verifyPassword);
@@ -29,36 +42,17 @@ document.addEventListener('DOMContentLoaded', function() {
         loadLogs();
     });
     document.getElementById('logoutButton').addEventListener('click', logout);
-    document.getElementById('openDatePickerButton').addEventListener('click', openDatePicker);
-    document.getElementById('cancelDatePickerButton').addEventListener('click', closeDatePicker);
+    document.getElementById('openDatePickerButton').addEventListener('click', openCustomDatePicker);
+    document.getElementById('prevModalMonthButton').addEventListener('click', () => changeModalMonth(-1));
+    document.getElementById('nextModalMonthButton').addEventListener('click', () => changeModalMonth(1));
     document.getElementById('confirmRangeButton').addEventListener('click', confirmRangeSelection);
+    document.getElementById('cancelDatePickerButton').addEventListener('click', closeCustomDatePicker);
     document.getElementById('addScheduleButton').addEventListener('click', addSchedule);
     document.getElementById('filterUser').addEventListener('change', filterSchedules);
-    document.getElementById('calendarViewBtn').addEventListener('click', () => {
-        switchView('calendar');
-        renderCalendar();
-    });
+    document.getElementById('calendarViewBtn').addEventListener('click', () => switchView('calendar'));
     document.getElementById('timelineViewBtn').addEventListener('click', () => switchView('timeline'));
-
-    // 使用事件委托绑定月份切换按钮
-    document.addEventListener('click', function(event) {
-        if (event.target.id === 'prevMonthButton') {
-            changeMonth(-1);
-        } else if (event.target.id === 'nextMonthButton') {
-            changeMonth(1);
-        } else if (event.target.id === 'prevModalMonthButton') {
-            changeModalMonth(-1);
-        } else if (event.target.id === 'nextModalMonthButton') {
-            changeModalMonth(1);
-        }
-    });
-
-    // 回车键提交密码
-    document.getElementById('accessPassword').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            verifyPassword();
-        }
-    });
+    document.getElementById('prevMonthButton').addEventListener('click', () => changeMonth(-1));
+    document.getElementById('nextMonthButton').addEventListener('click', () => changeMonth(1));
 
     window.toggleComplete = toggleComplete;
     window.deleteSchedule = deleteSchedule;
