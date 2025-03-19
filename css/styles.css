@@ -1,171 +1,384 @@
-/* 基础样式 */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
+    font-family: 'Segoe UI', 'PingFang SC', Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 20px;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-h1, h2, h3 {
-    text-align: center;
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    min-height: 100vh;
     color: #2c3e50;
 }
 
-/* 容器样式 */
-.password-container, .login-container, .schedule-form, .schedule-list, .log-list {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+h1 {
+    text-align: center;
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    color: #1e3a8a;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
-/* 表单组 */
+.password-container, .login-container, .schedule-form {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.password-container:hover, .login-container:hover, .schedule-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #34495e;
+    font-weight: 600;
+    font-size: 1.1em;
 }
 
-.form-group input, .form-group select {
+label i {
+    margin-right: 8px;
+}
+
+input, select {
     width: 100%;
-    max-width: 400px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+    padding: 12px 15px;
+    border: 2px solid #dfe6e9;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #f8f9fa;
+    position: relative;
+    z-index: 1;
 }
 
-/* 按钮样式 */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%2334495e"><path d="M7 10l-5-5 1.41-1.41L7 7.17l4.59-4.58L12 5l-5 5z"/></svg>') no-repeat right 10px center;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #1e90ff;
+    box-shadow: 0 0 8px rgba(30, 144, 255, 0.3);
+}
+
+.datetime-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.datetime-group input[type="text"] {
+    flex-grow: 1;
+}
+
 button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #3498db;
+    background: #1e90ff;
     color: white;
-    font-size: 16px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 5px;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
 }
 
 button:hover {
-    background-color: #2980b9;
+    background: #187bcd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4);
 }
 
-button:active {
-    background-color: #1e6bb8;
-}
-
-button i {
-    margin-right: 5px;
-}
-
-/* 错误提示 */
 .error-message {
     color: #e74c3c;
-    font-size: 14px;
+    font-size: 0.9em;
     margin-top: 5px;
     display: none;
 }
 
-/* 时间选择组 */
-.datetime-group {
+.schedule-list, .log-list {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    margin-bottom: 30px;
+}
+
+.schedule-list h2, .log-list h2 {
+    color: #1e3a8a;
+    margin: 0 0 20px 0;
+    font-size: 1.8em;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+}
+
+.filter-group {
+    margin-bottom: 20px;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     align-items: center;
 }
 
-.datetime-group input {
-    flex: 1;
+.filter-group select {
+    width: auto;
+    min-width: 150px;
 }
 
-/* 筛选组 */
-.filter-group {
+.view-toggle {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    gap: 10px;
 }
 
 .view-toggle button {
-    background: #7f8c8d;
+    width: auto;
+    padding: 8px 15px;
+    font-size: 0.9em;
 }
 
 .view-toggle button.active {
-    background: #3498db;
+    background: #187bcd;
 }
 
-/* 时间线视图 */
 .timeline {
-    margin-top: 20px;
+    position: relative;
+    padding-left: 50px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 25px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #1e90ff;
 }
 
 .timeline-item {
-    background: #ecf0f1;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    position: relative;
+    margin-bottom: 30px;
+    background: #f9fbfc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, background 0.3s ease;
+    display: flex;
+    align-items: flex-start;
+}
+
+.timeline-item:hover {
+    transform: translateX(5px);
+    background: #e6f0fa;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -38px;
+    top: 20px;
+    width: 14px;
+    height: 14px;
+    background: #1e90ff;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+.timeline-item.completed::before {
+    background: #2ecc71;
+}
+
+.timeline-item .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+    font-size: 1.2em;
+}
+
+.timeline-item .content {
+    flex-grow: 1;
+}
+
+.timeline-item .date-time {
+    color: #2c3e50;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 8px;
+}
+
+.timeline-item .event {
+    color: #34495e;
+    font-size: 1.1em;
+    margin: 5px 0;
+}
+
+.timeline-item .added-by {
+    color: #e67e22;
+    font-size: 0.95em;
+    margin-top: 5px;
+}
+
+.timeline-item .delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.3s ease;
+    margin-left: 10px;
+}
+
+.timeline-item .delete-btn:hover {
+    background: #c0392b;
+}
+
+.timeline-item .checkbox {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.timeline-item.completed .event {
+    text-decoration: line-through;
+    color: #7f8c8d;
+}
+
+/* 鏃ュ巻瑙嗗浘鏍峰紡 */
+.calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 15px;
 }
 
-.timeline-item.completed {
-    background: #dfe6e9;
-    text-decoration: line-through;
-}
-
-.timeline-item button {
-    background: #e74c3c;
-    padding: 5px 10px;
-    font-size: 14px;
-}
-
-/* 日历视图 */
-.calendar-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+.calendar-header button {
+    width: auto;
+    padding: 8px 15px;
+    font-size: 0.9em;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    text-align: center;
+    gap: 3px;
 }
 
-.calendar-grid div {
-    padding: 10px;
-    background: #fff;
-    border: 1px solid #ddd;
+.calendar-day {
+    background: #f9fbfc;
+    padding: 5px;
     border-radius: 5px;
+    min-height: 60px;
+    border: 1px solid #dfe6e9;
+    font-size: 0.9em;
+    position: relative;
 }
 
-.calendar-grid div.header {
-    background: #3498db;
+.calendar-day.header {
+    background: #1e90ff;
     color: white;
+    text-align: center;
     font-weight: bold;
 }
 
-.calendar-grid div.empty {
-    background: #f4f4f4;
+.calendar-day.empty {
+    background: #ecf0f1;
 }
 
-/* 模态框 */
+.calendar-day.today {
+    border: 2px solid #1e90ff;
+}
+
+.calendar-event {
+    background: #e6f0fa;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 3px;
+    font-size: 0.85em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.calendar-event.completed {
+    text-decoration: line-through;
+    color: #7f8c8d;
+}
+
+.calendar-event .avatar {
+    width: 20px;
+    height: 20px;
+    font-size: 0.8em;
+}
+
+.calendar-event .delete-btn {
+    padding: 3px 6px;
+    font-size: 0.7em;
+}
+
+.calendar-event .checkbox {
+    transform: scale(0.8);
+}
+
+.calendar-day.selected {
+    background-color: #a0c4ff;
+}
+
+/* 浼樺寲鏃堕棿娈靛睍绀� */
+.calendar-event .time-range {
+    display: block;
+    background: #d4e6ff;
+    color: #1e3a8a;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-weight: 600;
+    margin: 2px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.log-item {
+    padding: 10px;
+    border-bottom: 1px solid #ecf0f1;
+    font-size: 0.95em;
+    color: #34495e;
+}
+
+.log-item:last-child {
+    border-bottom: none;
+}
+
+/* 鏃ユ湡閫夋嫨鍣ㄥ脊绐楁牱寮� */
 .modal {
     display: none;
     position: fixed;
@@ -173,88 +386,147 @@ button i {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0,0,0,0.5);
     z-index: 1000;
 }
 
 .modal-content {
-    background: #fff;
-    margin: 10% auto;
-    padding: 20px;
+    background: white;
+    padding: 15px;
     border-radius: 10px;
-    max-width: 500px;
     width: 90%;
-    position: relative;
+    max-width: 350px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .modal-content h3 {
-    margin: 0 0 10px;
+    margin-bottom: 10px;
+    color: #1e3a8a;
+    font-size: 1.2em;
 }
 
-button.cancel {
+.modal-content .form-group {
+    margin-bottom: 10px;
+}
+
+.modal-content button {
+    width: 48%;
+    margin: 0 1%;
+    padding: 8px;
+    font-size: 0.9em;
+}
+
+.modal-content button.cancel {
     background: #e74c3c;
 }
 
-/* 日志列表 */
-.log-list div {
-    background: #ecf0f1;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+.modal-content button.cancel:hover {
+    background: #c0392b;
 }
 
-/* 媒体查询：移动端适配 */
+/* 绉诲姩绔紭鍖� */
 @media (max-width: 600px) {
     body {
-        padding: 10px;
+        padding: 15px;
     }
-
+    h1 {
+        font-size: 2em;
+    }
     .password-container, .login-container, .schedule-form, .schedule-list, .log-list {
         padding: 15px;
     }
-
-    .form-group input, .form-group select {
-        font-size: 14px;
-        padding: 8px;
+    .form-group label {
+        font-size: 1em;
     }
-
+    input, select, button {
+        font-size: 0.9em;
+        padding: 10px;
+    }
     button {
-        padding: 8px 16px;
-        font-size: 14px;
-        width: 100%;
-        max-width: 200px;
+        padding: 10px 20px;
     }
-
+    .timeline {
+        padding-left: 40px;
+    }
+    .timeline::before {
+        left: 20px;
+    }
+    .timeline-item {
+        padding: 15px;
+    }
+    .timeline-item::before {
+        left: -32px;
+        width: 12px;
+        height: 12px;
+    }
+    .timeline-item .avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 1em;
+    }
+    .timeline-item .date-time {
+        font-size: 1em;
+    }
+    .timeline-item .event, .timeline-item .added-by {
+        font-size: 0.9em;
+    }
+    .timeline-item .delete-btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+    .calendar-day {
+        padding: 3px;
+        min-height: 50px;
+        font-size: 0.8em;
+    }
+    .calendar-event {
+        padding: 3px;
+        font-size: 0.75em;
+    }
+    .calendar-event .avatar {
+        width: 15px;
+        height: 15px;
+        font-size: 0.7em;
+    }
+    .calendar-event .delete-btn {
+        padding: 2px 4px;
+        font-size: 0.6em;
+    }
+    .calendar-event .time-range {
+        font-size: 0.7em;
+        padding: 2px 4px;
+    }
+    .log-item {
+        font-size: 0.85em;
+    }
     .datetime-group {
         flex-direction: column;
         align-items: stretch;
     }
-
-    .datetime-group input, .datetime-group button {
+    .datetime-group button {
         width: 100%;
-        max-width: none;
     }
-
-    .filter-group {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .view-toggle {
-        display: flex;
-        gap: 10px;
-    }
-
-    .calendar-grid {
-        font-size: 12px;
-    }
-
-    .calendar-grid div {
-        padding: 5px;
-    }
-
     .modal-content {
-        margin: 20% auto;
         width: 95%;
+        max-width: 300px;
+        max-height: 70vh;
+        padding: 10px;
+    }
+    .modal-content h3 {
+        font-size: 1em;
+    }
+    .modal-content button {
+        font-size: 0.8em;
+        padding: 6px;
     }
 }
