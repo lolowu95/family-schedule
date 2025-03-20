@@ -23,10 +23,11 @@ const auth = firebase.auth(app);
 // 匿名登录
 auth.signInAnonymously()
     .then(() => {
-        console.log("Signed in anonymously to Firebase");
+        console.log("Signed in anonymously to Firebase (9.x compat mode)");
     })
     .catch((error) => {
         console.error("Anonymous auth failed:", error.code, error.message);
+        alert("无法连接到数据库，请检查网络连接后重试！");
     });
 
 // 导出 Firebase Realtime Database 方法
