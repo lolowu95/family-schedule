@@ -31,6 +31,10 @@ function changeModalMonth(delta) {
 function renderModalCalendar() {
     const calendarGrid = document.getElementById('modalCalendarGrid');
     const calendarMonth = document.getElementById('modalCalendarMonth');
+    if (!calendarGrid || !calendarMonth) {
+        console.error("未找到 modalCalendarGrid 或 modalCalendarMonth 元素");
+        return;
+    }
     calendarGrid.innerHTML = '';
 
     calendarMonth.textContent = `${modalCurrentMonth.getFullYear()}年 ${modalCurrentMonth.getMonth() + 1}月`;
@@ -69,6 +73,9 @@ function renderModalCalendar() {
         calendarGrid.appendChild(dayDiv);
     }
 
+    calendarGrid.removeEventListener('mousedown', startSelection);
+    calendarGrid.removeEventListener('mouseover', updateSelection);
+    calendarGrid.removeEventListener('mouseup', endSelection);
     calendarGrid.addEventListener('mousedown', startSelection);
     calendarGrid.addEventListener('mouseover', updateSelection);
     calendarGrid.addEventListener('mouseup', endSelection);
@@ -129,25 +136,39 @@ function confirmRangeSelection() {
         alert('开始时间不能早于当前时间！');
         return;
     }
-    document.getElementById('datetimeDisplay').value = `${startDate.toLocaleString('zh-CN', {
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit'
-    })} 至 ${endDate.toLocaleString('zh-CN', {
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit'
-    })}`;
-    document.getElementById('datetimeDisplay').dataset.start = startDate.toISOString();
-    document.getElementById('datetimeDisplay').dataset.end = endDate.toISOString();
+    const datetimeDisplay = document.getElementById('datetimeDisplay');
+    if (datetimeDisplay) {
+        datetimeDisplay.value = `${startDate.toLocaleString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit'
+        })} 至 ${endDate.toLocaleString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit'
+        })}`;
+        datetimeDisplay.dataset.start = startDate.toISOString();
+        datetimeDisplay.dataset.end = endDate.toISOString();
+    }
     closeCustomDatePicker();
 }
 
 function changeMonth(delta) {
     currentMonth.setMonth(currentMonth.getMonth() + delta);
+    // 修复：调用 renderCalendar
+    const filterUser = document.getElementById('filterUser').value;
+    let filteredSchedules = window.schedules || [];
+    if (filterUser !== 'all') {
+        filteredSchedules = filteredSchedules.filter(schedule => schedule.user === filterUser);
+    }
+    renderCalendar(filteredSchedules);
 }
 
 function renderCalendar(filteredSchedules) {
     const calendarGrid = document.getElementById('calendarGrid');
     const calendarMonth = document.getElementById('calendarMonth');
+    if (!calendarGrid || !calendarMonth) {
+        console.error("未找到 calendarGrid 或 calendarMonth 元素");
+        return;
+    }
     calendarGrid.innerHTML = '';
 
     calendarMonth.textContent = `${currentMonth.getFullYear()}年 ${currentMonth.getMonth() + 1}月`;
@@ -224,6 +245,10 @@ function renderCalendar(filteredSchedules) {
 
 function renderTimeline(filteredSchedules) {
     const timeline = document.getElementById('timelineView');
+    if (!timeline) {
+        console.error("未找到 timelineView 元素");
+        return;
+    }
     timeline.innerHTML = '';
 
     filteredSchedules.sort((a, b) => a.startDatetime - b.startDatetime);
