@@ -1,157 +1,238 @@
-import { ref, set, remove, onValue } from './firebase.js';
+import { schedulesRef, logsRef } from './firebase.js';
+import { getCurrentUser } from './auth.js';
+import { renderTimeline, renderCalendar } from './calendar.js';
 
-function addSchedule() {
-    const datetimeDisplay = document.getElementById('datetimeDisplay');
-    const eventInput = document.getElementById('event');
-    const start = datetimeDisplay.dataset.start;
-    const end = datetimeDisplay.dataset.end;
-    const event = eventInput.value.trim();
-    const user = localStorage.getItem('currentUser');
+let schedules = [];
+let logs = [];
+let currentView = 'timeline';
 
-    if (!start || !end || !event || !user) {
-        alert('请填写所有字段！');
-        return;
-    }
-
-    const scheduleId = Date.now().toString();
-    const scheduleRef = ref(`schedules/${scheduleId}`);
-    set(scheduleRef, {
-        start,
-        end,
-        event,
-        user,
-        completed: false
-    }).then(() => {
-        console.log("Schedule added");
-        eventInput.value = '';
-        // 记录日志
-        const logRef = ref(`logs/${Date.now()}`);
-        set(logRef, {
-            timestamp: new Date().toLocaleString('zh-CN'),
-            message: `${user} 添加了日程：${event}（${start} 至 ${end}）`
-        });
-    }).catch((error) => {
-        console.error("Failed to add schedule:", error);
-    });
+function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
 }
 
 function loadSchedules() {
-    console.log("loadSchedules called");
-    const schedulesRef = ref('schedules');
-    onValue(schedulesRef, (snapshot) => {
+    console.log("加载日程数据");
+    if (!schedulesRef) {
+        console.error("schedulesRef 未定义，Firebase 初始化可能失败");
+        alert("无法加载日程，Firebase 初始化失败！");
+        return;
+    }
+    schedulesRef.on('value', (snapshot) => {
+        schedules = [];
         const data = snapshot.val();
-        const timelineView = document.getElementById('timelineView');
-        timelineView.innerHTML = ''; // 清空现有内容
         if (data) {
-            console.log("Schedules loaded:", data);
-            Object.entries(data).forEach(([id, schedule]) => {
-                const item = document.createElement('div');
-                item.className = 'timeline-item';
-                item.innerHTML = `
-                    <span>${schedule.start} 至 ${schedule.end} - ${schedule.event} (${schedule.user})</span>
-                    <button onclick="deleteSchedule('${id}')">删除</button>
-                `;
-                timelineView.appendChild(item);
+            Object.keys(data).forEach(key => {
+                const schedule = data[key];
+                if (isValidDate(schedule.startDatetime) && isValidDate(schedule.endDatetime)) {
+                    schedules.push({
+                        id: key,
+                        startDatetime: new Date(schedule.startDatetime),
+                        endDatetime: new Date(schedule.endDatetime),
+                        event: schedule.event,
+                        user: schedule.user,
+                        completed: schedule.completed
+                    });
+                } else {
+                    console.error(`Invalid date for schedule ${key}:`, schedule);
+                }
             });
-        } else {
-            console.log("No schedules found");
-            timelineView.innerHTML = '<p>暂无日程</p>';
         }
+        loadHolidays();
+        filterSchedules();
     }, (error) => {
-        console.error("Failed to load schedules:", error);
+        console.error('加载数据失败:', error);
+        alert('加载日程失败，请检查网络或 Firebase 配置！');
     });
 }
 
-function loadLogs() {
-    console.log("loadLogs called");
-    const logsRef = ref('logs');
-    onValue(logsRef, (snapshot) => {
-        const data = snapshot.val();
-        const logsDiv = document.getElementById('logs');
-        logsDiv.innerHTML = '';
-        if (data) {
-            console.log("Logs loaded:", data);
-            Object.entries(data).forEach(([id, log]) => {
-                const logItem = document.createElement('div');
-                logItem.textContent = `${log.timestamp}: ${log.message}`;
-                logsDiv.appendChild(logItem);
+function loadHolidays() {
+    const now = new Date();
+    const holidays = [
+        { start: '2025-01-01T00:00:00.000Z', end: '2025-01-01T23:59:59.000Z', event: '元旦' },
+        { start: '2025-01-28T00:00:00.000Z', end: '2025-01-28T23:59:59.000Z', event: '春节前夕' },
+        { start: '2025-01-29T00:00:00.000Z', end: '2025-02-04T23:59:59.000Z', event: '春节' },
+        { start: '2025-02-14T00:00:00.000Z', end: '2025-02-14T23:59:59.000Z', event: '情人节' },
+        { start: '2025-04-04T00:00:00.000Z', end: '2025-04-04T23:59:59.000Z', event: '清明节' },
+        { start: '2025-05-01T00:00:00.000Z', end: '2025-05-01T23:59:59.000Z', event: '劳动节' },
+        { start: '2025-06-01T00:00:00.000Z', end: '2025-06-01T23:59:59.000Z', event: '儿童节' },
+        { start: '2025-06-30T00:00:00.000Z', end: '2025-06-30T23:59:59.000Z', event: '端午节' },
+        { start: '2025-10-01T00:00:00.000Z', end: '2025-10-07T23:59:59.000Z', event: '国庆节' },
+        { start: '2025-10-06T00:00:00.000Z', end: '2025-10-06T23:59:59.000Z', event: '中秋节' }
+    ];
+    holidays.forEach(holiday => {
+        const startDate = new Date(holiday.start);
+        const endDate = new Date(holiday.end);
+        if (startDate >= now && !schedules.some(s => s.startDatetime.getTime() === startDate.getTime() && s.event === holiday.event)) {
+            schedules.push({
+                startDatetime: startDate,
+                endDatetime: endDate,
+                event: holiday.event,
+                user: '系统',
+                completed: false
             });
-        } else {
-            console.log("No logs found");
-            logsDiv.innerHTML = '<p>暂无日志</p>';
+            schedulesRef.push({
+                startDatetime: startDate.toISOString(),
+                endDatetime: endDate.toISOString(),
+                event: holiday.event,
+                user: '系统',
+                completed: false
+            });
         }
-    }, (error) => {
-        console.error("Failed to load logs:", error);
-    });
-}
-
-function deleteSchedule(id) {
-    const scheduleRef = ref(`schedules/${id}`);
-    remove(scheduleRef).then(() => {
-        console.log("Schedule deleted");
-        const user = localStorage.getItem('currentUser');
-        const logRef = ref(`logs/${Date.now()}`);
-        set(logRef, {
-            timestamp: new Date().toLocaleString('zh-CN'),
-            message: `${user} 删除了日程（ID: ${id}）`
-        });
-    }).catch((error) => {
-        console.error("Failed to delete schedule:", error);
     });
 }
 
 function filterSchedules() {
     const filterUser = document.getElementById('filterUser').value;
-    const timelineView = document.getElementById('timelineView');
-    const schedulesRef = ref('schedules');
-    onValue(schedulesRef, (snapshot) => {
+    let filteredSchedules = schedules;
+
+    if (filterUser !== 'all') {
+        filteredSchedules = filteredSchedules.filter(schedule => schedule.user === filterUser);
+    }
+
+    if (currentView === 'calendar') {
+        renderCalendar(filteredSchedules);
+    } else {
+        renderTimeline(filteredSchedules);
+    }
+}
+
+function addSchedule() {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        alert('请先登录！');
+        return;
+    }
+    const startDatetime = document.getElementById('datetimeDisplay').dataset.start;
+    const endDatetime = document.getElementById('datetimeDisplay').dataset.end;
+    const event = document.getElementById('event').value.trim();
+
+    if (!startDatetime || !endDatetime || !event) {
+        alert('请填写所有必填写！');
+        return;
+    }
+
+    const startDate = new Date(startDatetime);
+    const endDate = new Date(endDatetime);
+    const now = new Date();
+    if (startDate < now) {
+        alert('开始时间不能早于当前时间！');
+        return;
+    }
+
+    const newSchedule = {
+        startDatetime: startDate.toISOString(),
+        endDatetime: endDate.toISOString(),
+        event: event,
+        user: currentUser,
+        completed: false
+    };
+    schedulesRef.push(newSchedule).then(() => {
+        logAction('添加日程', `事件: ${event}, 时间: ${startDate.toLocaleString('zh-CN')} 至 ${endDate.toLocaleString('zh-CN')}`);
+        document.getElementById('datetimeDisplay').value = '';
+        document.getElementById('datetimeDisplay').dataset.start = '';
+        document.getElementById('datetimeDisplay').dataset.end = '';
+        document.getElementById('event').value = '';
+    });
+}
+
+function toggleComplete(id, checkbox) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        alert('请先登录！');
+        return;
+    }
+    schedulesRef.child(id).update({ completed: checkbox.checked }).then(() => {
+        const schedule = schedules.find(s => s.id === id);
+        logAction('标记日程', `事件: ${schedule.event}, 状态: ${checkbox.checked ? '已完成' : '未完成'}`);
+    });
+}
+
+function deleteSchedule(id, event, datetime) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        alert('请先登录！');
+        return;
+    }
+    schedulesRef.child(id).remove().then(() => {
+        logAction('删除日程', `事件: ${event}, 时间: ${datetime}`);
+    });
+}
+
+function logAction(action, details) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    const timestamp = new Date().toISOString();
+    const logEntry = {
+        user: currentUser,
+        action: action,
+        details: details,
+        timestamp: timestamp
+    };
+    logsRef.push(logEntry).catch((error) => {
+        console.error("记录日志失败:", error);
+    });
+}
+
+function loadLogs() {
+    logsRef.on('value', (snapshot) => {
+        logs = [];
         const data = snapshot.val();
-        timelineView.innerHTML = '';
         if (data) {
-            const filtered = Object.entries(data).filter(([id, schedule]) => {
-                return !filterUser || schedule.user === filterUser;
-            });
-            if (filtered.length > 0) {
-                filtered.forEach(([id, schedule]) => {
-                    const item = document.createElement('div');
-                    item.className = 'timeline-item';
-                    item.innerHTML = `
-                        <span>${schedule.start} 至 ${schedule.end} - ${schedule.event} (${schedule.user})</span>
-                        <button onclick="deleteSchedule('${id}')">删除</button>
-                    `;
-                    timelineView.appendChild(item);
+            Object.keys(data).forEach(key => {
+                logs.push({
+                    id: key,
+                    user: data[key].user,
+                    action: data[key].action,
+                    details: data[key].details,
+                    timestamp: new Date(data[key].timestamp)
                 });
-            } else {
-                timelineView.innerHTML = '<p>暂无日程</p>';
-            }
+            });
+        }
+        renderLogs();
+    }, (error) => {
+        console.error('加载日志失败:', error);
+        if (error.code === 'PERMISSION_DENIED') {
+            alert('加载日志失败，请检查 Firebase 规则，当前用户无权限访问 /logs 节点。');
         } else {
-            timelineView.innerHTML = '<p>暂无日程</p>';
+            alert('加载日志失败，请检查网络或 Firebase 配置: ' + error.message);
         }
     });
 }
 
+function renderLogs() {
+    const logsContainer = document.getElementById('logs');
+    logsContainer.innerHTML = '';
+    logs.sort((a, b) => b.timestamp - a.timestamp);
+    logs.forEach(log => {
+        const logItem = document.createElement('div');
+        logItem.className = 'log-item';
+        logItem.innerHTML = `${log.timestamp.toLocaleString('zh-CN')} - ${log.user} ${log.action}: ${log.details}`;
+        logsContainer.appendChild(logItem);
+    });
+}
+
 function switchView(view) {
+    currentView = view;
     const calendarView = document.getElementById('calendarView');
     const timelineView = document.getElementById('timelineView');
-    const calendarViewBtn = document.getElementById('calendarViewBtn');
-    const timelineViewBtn = document.getElementById('timelineViewBtn');
+    const calendarBtn = document.getElementById('calendarViewBtn');
+    const timelineBtn = document.getElementById('timelineViewBtn');
 
     if (view === 'calendar') {
         calendarView.style.display = 'block';
         timelineView.style.display = 'none';
-        calendarViewBtn.classList.add('active');
-        timelineViewBtn.classList.remove('active');
+        calendarBtn.classList.add('active');
+        timelineBtn.classList.remove('active');
+        renderCalendar(schedules);
     } else {
         calendarView.style.display = 'none';
         timelineView.style.display = 'block';
-        calendarViewBtn.classList.remove('active');
-        timelineViewBtn.classList.add('active');
+        calendarBtn.classList.remove('active');
+        timelineBtn.classList.add('active');
+        renderTimeline(schedules);
     }
+    filterSchedules();
 }
 
-function toggleComplete() {
-    // 占位函数，未实现
-    console.log("toggleComplete called");
-}
-
-export { addSchedule, loadSchedules, loadLogs, filterSchedules, switchView, toggleComplete, deleteSchedule };
+export { loadSchedules, loadLogs, addSchedule, toggleComplete, deleteSchedule, filterSchedules, switchView, schedules };
