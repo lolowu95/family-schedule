@@ -1,7 +1,8 @@
-// 引入 Firebase SDK
-import firebase from 'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js';
-import 'https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js';
-import 'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js';
+// 确保 firebase 已通过 <script> 标签引入到全局
+if (!window.firebase) {
+    console.error("Firebase SDK not loaded. Please ensure Firebase scripts are included in index.html.");
+    throw new Error("Firebase SDK not loaded");
+}
 
 // 用户提供的 Firebase 配置
 const firebaseConfig = {
@@ -39,4 +40,5 @@ const onValue = (ref, callback) => {
     });
 };
 
+// 导出为 ES 模块
 export { database, ref, set, get, remove, onValue };
