@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>家庭日程记录</title>
-    <!-- Font Awesome 图标 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,7 +18,6 @@
             position: relative; 
             overflow-x: hidden; 
         }
-        /* 动态背景效果 */
         body::before {
             content: '';
             position: fixed;
@@ -132,7 +130,6 @@
             transform: translateY(-2px); 
             box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4); 
         }
-        /* 按钮波纹效果 */
         button::after {
             content: '';
             position: absolute;
@@ -314,7 +311,6 @@
             text-decoration: line-through; 
             color: #7f8c8d; 
         }
-        /* 日历视图样式 */
         .calendar-header { 
             display: flex; 
             justify-content: space-between; 
@@ -437,7 +433,6 @@
         .calendar-day.selected {
             background-color: #a0c4ff;
         }
-        /* 日程详情模态框样式 */
         .modal { 
             display: none; 
             position: fixed; 
@@ -492,7 +487,6 @@
         .modal-content button.cancel:hover { 
             background: #c0392b; 
         }
-        /* 自定义日期选择器样式 */
         .calendar-month { 
             margin-bottom: 20px; 
         }
@@ -515,7 +509,7 @@
             font-size: 0.9em; 
             cursor: pointer; 
             transition: background 0.3s ease, transform 0.2s ease; 
-            touch-action: none; /* 禁用默认触摸行为 */
+            touch-action: none;
         }
         .calendar-day.header { 
             background: #1e90ff; 
@@ -541,7 +535,6 @@
             background: #e6f0fa; 
             transform: scale(1.1); 
         }
-        /* 日程详情模态框样式 */
         .schedule-detail-modal .modal-content { 
             display: flex; 
             flex-direction: column; 
@@ -621,7 +614,6 @@
         .log-item:hover { 
             background: #f0f4f8; 
         }
-        /* 操作日志折叠样式 */
         .log-list .logs-container { 
             max-height: none; 
             transition: max-height 0.3s ease; 
@@ -649,7 +641,6 @@
             background: linear-gradient(45deg, #187bcd, #00aaff); 
             transform: scale(1.05); 
         }
-        /* 移动端优化 */
         @media (max-width: 600px) { 
             body { 
                 padding: 10px; 
@@ -677,7 +668,7 @@
             } 
             .timeline { 
                 padding-left: 40px; 
-                -webkit-overflow-scrolling: touch; /* 优化移动端滚动 */
+                -webkit-overflow-scrolling: touch;
             } 
             .timeline::before { 
                 left: 20px; 
@@ -832,7 +823,7 @@
                 <option value="懒宝">懒宝</option>
             </select>
         </div>
-        <button onclick="login()"><i class="fas fa-sign-in-alt"></i> 登录</button>
+        <button id="loginBtn"><i class="fas fa-sign-in-alt"></i> 登录</button>
     </div>
 
     <!-- 输入区域 -->
@@ -841,7 +832,7 @@
             <label><i class="fas fa-calendar"></i> 时间段</label>
             <div class="datetime-group">
                 <input type="text" id="datetimeDisplay" readonly placeholder="点击选择时间段">
-                <button onclick="openCustomDatePicker()"><i class="fas fa-calendar-alt"></i> 选择时间段</button>
+                <button id="openDatePickerBtn"><i class="fas fa-calendar-alt"></i> 选择时间段</button>
             </div>
         </div>
         <div class="form-group">
@@ -852,8 +843,8 @@
             <label><i class="fas fa-user"></i> 添加者</label>
             <input type="text" id="addedBy" value="" readonly>
         </div>
-        <button onclick="addSchedule()"><i class="fas fa-plus"></i> 添加日程</button>
-        <button onclick="logout()" style="background: #e74c3c; margin-top: 10px;"><i class="fas fa-sign-out-alt"></i> 登出</button>
+        <button id="addScheduleBtn"><i class="fas fa-plus"></i> 添加日程</button>
+        <button id="logoutBtn" style="background: #e74c3c; margin-top: 10px;"><i class="fas fa-sign-out-alt"></i> 登出</button>
     </div>
 
     <!-- 自定义日期选择器弹窗 -->
@@ -861,12 +852,12 @@
         <div class="modal-content">
             <h3>选择时间段</h3>
             <div class="calendar-header">
-                <button onclick="changeModalMonth(-1)">上一月</button>
-                <button onclick="changeModalMonth(1)">下一月</button>
+                <button id="prevModalMonthBtn">上一月</button>
+                <button id="nextModalMonthBtn">下一月</button>
             </div>
             <div id="modalCalendarGrid"></div>
-            <button onclick="confirmRangeSelection()">确认</button>
-            <button class="cancel" onclick="closeCustomDatePicker()">取消</button>
+            <button id="confirmRangeBtn">确认</button>
+            <button class="cancel" id="closeDatePickerBtn">取消</button>
         </div>
     </div>
 
@@ -875,7 +866,7 @@
         <div class="modal-content">
             <h3>日程详情</h3>
             <div id="scheduleDetailContent"></div>
-            <button class="cancel" onclick="closeScheduleDetailModal()">关闭</button>
+            <button class="cancel" id="closeScheduleDetailBtn">关闭</button>
         </div>
     </div>
 
@@ -892,15 +883,15 @@
                 <option value="懒宝">懒宝</option>
             </select>
             <div class="view-toggle">
-                <button id="calendarViewBtn" onclick="switchView('calendar')">日历视图</button>
-                <button id="timelineViewBtn" onclick="switchView('timeline')" class="active">时间线视图</button>
+                <button id="calendarViewBtn">日历视图</button>
+                <button id="timelineViewBtn" class="active">时间线视图</button>
             </div>
         </div>
         <div id="calendarView" style="display: none;">
             <div class="calendar-header">
-                <button onclick="changeMonth(-1)">上一月</button>
+                <button id="prevMonthBtn">上一月</button>
                 <h3 id="calendarMonth"></h3>
-                <button onclick="changeMonth(1)">下一月</button>
+                <button id="nextMonthBtn">下一月</button>
             </div>
             <div class="calendar-grid" id="calendarGrid"></div>
         </div>
@@ -911,7 +902,7 @@
     <div class="log-list" id="logList" style="display: none;">
         <h2><i class="fas fa-history"></i> 操作日志</h2>
         <div id="logs" class="logs-container collapsed"></div>
-        <button id="toggleLogsBtn" class="toggle-btn" style="display: none;" onclick="toggleLogs()">
+        <button id="toggleLogsBtn" class="toggle-btn" style="display: none;">
             <i class="fas fa-chevron-down"></i> 查看更多
         </button>
     </div>
@@ -926,13 +917,13 @@
         let schedules = [];
         let logs = [];
         let db, schedulesRef, logsRef, auth;
-        let currentView = 'timeline'; // 默认视图
-        let currentMonth = new Date(); // 当前显示的月份
-        let modalStartMonth = new Date(); // 模态框的起始月份
+        let currentView = 'timeline';
+        let currentMonth = new Date();
+        let modalStartMonth = new Date();
         let modalIsSelecting = false;
         let modalSelectedStart = null;
         let modalSelectedEnd = null;
-        let isLogsExpanded = false; // 跟踪日志是否展开
+        let isLogsExpanded = false;
 
         const firebaseConfig = {
             apiKey: "AIzaSyCXv-VzsLyRZ6E4m7AnFUXv3_tVoedegSE",
@@ -963,20 +954,41 @@
             return !isNaN(date.getTime());
         }
 
-        // 密码验证（使用 Firebase Authentication）
+        // 清理系统日程
+        function cleanSystemSchedules() {
+            schedulesRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        const schedule = data[key];
+                        if (schedule.user === '系统') {
+                            schedulesRef.child(key).remove().then(() => {
+                                console.log(`已删除系统日程: ${schedule.event}`);
+                                logAction('删除系统日程', `事件: ${schedule.event}, 时间: ${new Date(schedule.startDatetime).toLocaleString('zh-CN')} 至 ${new Date(schedule.endDatetime).toLocaleString('zh-CN')}`);
+                            }).catch((error) => {
+                                console.error(`删除系统日程失败: ${schedule.event}`, error);
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // 密码验证
         function verifyPassword() {
             console.log("verifyPassword 函数被调用");
             const inputPassword = document.getElementById('accessPassword').value;
             const passwordError = document.getElementById('passwordError');
-            const email = "641812032@qq.com"; // 共享账户邮箱
+            const email = "641812032@qq.com";
 
             auth.signInWithEmailAndPassword(email, inputPassword)
                 .then((userCredential) => {
-                    // 登录成功
                     localStorage.setItem('accessVerified', 'true');
                     document.getElementById('passwordContainer').style.display = 'none';
                     document.getElementById('loginContainer').style.display = 'block';
                     passwordError.style.display = 'none';
+                    loadSchedules();
+                    loadLogs();
                 })
                 .catch((error) => {
                     console.error("密码验证失败:", error);
@@ -985,16 +997,117 @@
                 });
         }
 
-        // 绑定验证按钮事件
+        // 页面加载
+        window.onload = function() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    localStorage.setItem('accessVerified', 'true');
+                    document.getElementById('passwordContainer').style.display = 'none';
+                    document.getElementById('loginContainer').style.display = 'block';
+                    loadSchedules();
+                    loadLogs();
+                } else {
+                    localStorage.removeItem('accessVerified');
+                    document.getElementById('passwordContainer').style.display = 'block';
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('scheduleForm').style.display = 'none';
+                    document.getElementById('scheduleList').style.display = 'none';
+                    document.getElementById('logList').style.display = 'none';
+                }
+
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowEnd = new Date(tomorrow);
+                tomorrowEnd.setHours(tomorrow.getHours() + 1);
+                document.getElementById('datetimeDisplay').value = `${tomorrow.toLocaleString('zh-CN', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                })} 至 ${tomorrowEnd.toLocaleString('zh-CN', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                })}`;
+                document.getElementById('datetimeDisplay').dataset.start = tomorrow.toISOString();
+                document.getElementById('datetimeDisplay').dataset.end = tomorrowEnd.toISOString();
+            });
+        };
+
+        // 绑定事件
         document.addEventListener('DOMContentLoaded', function() {
             const verifyButton = document.getElementById('verifyButton');
             if (verifyButton) {
                 verifyButton.addEventListener('click', verifyPassword);
-            } else {
-                console.error("未找到 verifyButton 元素");
             }
 
-            // 点击模态框外部关闭
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', login);
+            }
+
+            const addScheduleBtn = document.getElementById('addScheduleBtn');
+            if (addScheduleBtn) {
+                addScheduleBtn.addEventListener('click', addSchedule);
+            }
+
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            const openDatePickerBtn = document.getElementById('openDatePickerBtn');
+            if (openDatePickerBtn) {
+                openDatePickerBtn.addEventListener('click', openCustomDatePicker);
+            }
+
+            const prevModalMonthBtn = document.getElementById('prevModalMonthBtn');
+            if (prevModalMonthBtn) {
+                prevModalMonthBtn.addEventListener('click', () => changeModalMonth(-1));
+            }
+
+            const nextModalMonthBtn = document.getElementById('nextModalMonthBtn');
+            if (nextModalMonthBtn) {
+                nextModalMonthBtn.addEventListener('click', () => changeModalMonth(1));
+            }
+
+            const confirmRangeBtn = document.getElementById('confirmRangeBtn');
+            if (confirmRangeBtn) {
+                confirmRangeBtn.addEventListener('click', confirmRangeSelection);
+            }
+
+            const closeDatePickerBtn = document.getElementById('closeDatePickerBtn');
+            if (closeDatePickerBtn) {
+                closeDatePickerBtn.addEventListener('click', closeCustomDatePicker);
+            }
+
+            const closeScheduleDetailBtn = document.getElementById('closeScheduleDetailBtn');
+            if (closeScheduleDetailBtn) {
+                closeScheduleDetailBtn.addEventListener('click', closeScheduleDetailModal);
+            }
+
+            const calendarViewBtn = document.getElementById('calendarViewBtn');
+            if (calendarViewBtn) {
+                calendarViewBtn.addEventListener('click', () => switchView('calendar'));
+            }
+
+            const timelineViewBtn = document.getElementById('timelineViewBtn');
+            if (timelineViewBtn) {
+                timelineViewBtn.addEventListener('click', () => switchView('timeline'));
+            }
+
+            const prevMonthBtn = document.getElementById('prevMonthBtn');
+            if (prevMonthBtn) {
+                prevMonthBtn.addEventListener('click', () => changeMonth(-1));
+            }
+
+            const nextMonthBtn = document.getElementById('nextMonthBtn');
+            if (nextMonthBtn) {
+                nextMonthBtn.addEventListener('click', () => changeMonth(1));
+            }
+
+            const toggleLogsBtn = document.getElementById('toggleLogsBtn');
+            if (toggleLogsBtn) {
+                toggleLogsBtn.addEventListener('click', toggleLogs);
+            }
+
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
@@ -1004,27 +1117,6 @@
             });
         });
 
-        // 页面加载
-        window.onload = function() {
-            if (localStorage.getItem('accessVerified') === 'true') {
-                document.getElementById('passwordContainer').style.display = 'none';
-                document.getElementById('loginContainer').style.display = 'block';
-            }
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowEnd = new Date(tomorrow);
-            tomorrowEnd.setHours(tomorrow.getHours() + 1);
-            document.getElementById('datetimeDisplay').value = `${tomorrow.toLocaleString('zh-CN', {
-                year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit'
-            })} 至 ${tomorrowEnd.toLocaleString('zh-CN', {
-                year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit'
-            })}`;
-            document.getElementById('datetimeDisplay').dataset.start = tomorrow.toISOString();
-            document.getElementById('datetimeDisplay').dataset.end = tomorrowEnd.toISOString();
-        };
-
         // 打开模态框
         function openModal(modal) {
             modal.classList.add('show');
@@ -1033,280 +1125,6 @@
         // 关闭模态框
         function closeModal(modal) {
             modal.classList.remove('show');
-        }
-
-        // 打开自定义日期选择器
-        function openCustomDatePicker() {
-            const modal = document.getElementById('datePickerModal');
-            modalStartMonth = new Date();
-            modalIsSelecting = false;
-            modalSelectedStart = null;
-            modalSelectedEnd = null;
-            renderModalCalendar();
-            openModal(modal);
-        }
-
-        // 关闭自定义日期选择器
-        function closeCustomDatePicker() {
-            const modal = document.getElementById('datePickerModal');
-            closeModal(modal);
-            modalIsSelecting = false;
-            modalSelectedStart = null;
-            modalSelectedEnd = null;
-            document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('selected'));
-        }
-
-        // 打开日程详情模态框
-        function openScheduleDetailModal(schedule) {
-            const modal = document.getElementById('scheduleDetailModal');
-            const content = document.getElementById('scheduleDetailContent');
-            const startDate = new Date(schedule.startDatetime);
-            const endDate = new Date(schedule.endDatetime);
-            const avatar = {
-                '吴乐乐': { color: '#e74c3c', initial: '吴' },
-                '冯妈妈': { color: '#3498db', initial: '冯' },
-                '张宝宝': { color: '#2ecc71', initial: '张' },
-                '懒宝': { color: '#f1c40f', initial: '懒' }
-            }[schedule.user] || { color: '#95a5a6', initial: schedule.user[0] };
-
-            const startFormatted = startDate.toLocaleString('zh-CN', {
-                year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit',
-                timeZone: 'Asia/Shanghai'
-            });
-            const endFormatted = endDate.toLocaleString('zh-CN', {
-                year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit',
-                timeZone: 'Asia/Shanghai'
-            });
-
-            content.innerHTML = `
-                <div class="detail-item ${schedule.completed ? 'completed' : ''}">
-                    <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
-                    <div class="content">
-                        <div class="time-range">${startFormatted} 至 ${endFormatted}</div>
-                        <div class="event-text">事件: ${schedule.event}</div>
-                        <div class="added-by">添加者: ${schedule.user}</div>
-                    </div>
-                </div>
-                <div class="actions">
-                    <input type="checkbox" class="checkbox" ${schedule.completed ? 'checked' : ''} onchange="toggleComplete('${schedule.id}', this)">
-                    <button class="delete-btn" onclick="deleteSchedule('${schedule.id}', '${schedule.event}', '${startFormatted} 至 ${endFormatted}')"><i class="fas fa-trash-alt"></i> 删除</button>
-                </div>
-            `;
-            openModal(modal);
-        }
-
-        // 关闭日程详情模态框
-        function closeScheduleDetailModal() {
-            const modal = document.getElementById('scheduleDetailModal');
-            closeModal(modal);
-        }
-
-        // 切换模态框月份
-        function changeModalMonth(delta) {
-            modalStartMonth.setMonth(modalStartMonth.getMonth() + delta);
-            renderModalCalendar();
-        }
-
-        // 渲染模态框日历（显示多个月份）
-        function renderModalCalendar() {
-            const calendarGrid = document.getElementById('modalCalendarGrid');
-            calendarGrid.innerHTML = '';
-
-            // 显示两个月份：当前月和下个月
-            const monthsToShow = 2;
-            const today = new Date();
-
-            for (let i = 0; i < monthsToShow; i++) {
-                const currentMonth = new Date(modalStartMonth.getFullYear(), modalStartMonth.getMonth() + i, 1);
-                const monthDiv = document.createElement('div');
-                monthDiv.className = 'calendar-month';
-
-                // 月份标题
-                const monthTitle = document.createElement('h4');
-                monthTitle.textContent = `${currentMonth.getFullYear()}年 ${currentMonth.getMonth() + 1}月`;
-                monthDiv.appendChild(monthTitle);
-
-                // 创建日历网格
-                const monthGrid = document.createElement('div');
-                monthGrid.className = 'calendar-grid';
-                monthDiv.appendChild(monthGrid);
-
-                // 添加星期头部
-                const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
-                daysOfWeek.forEach(day => {
-                    const dayHeader = document.createElement('div');
-                    dayHeader.className = 'calendar-day header';
-                    dayHeader.textContent = day;
-                    monthGrid.appendChild(dayHeader);
-                });
-
-                // 获取当前月份的第一天和最后一天
-                const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-                const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
-
-                // 计算第一天是星期几
-                const startDay = firstDayOfMonth.getDay();
-
-                // 添加空白格子
-                for (let j = 0; j < startDay; j++) {
-                    const emptyDay = document.createElement('div');
-                    emptyDay.className = 'calendar-day empty';
-                    monthGrid.appendChild(emptyDay);
-                }
-
-                // 添加日期格子
-                for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-                    const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-                    const dayDiv = document.createElement('div');
-                    dayDiv.className = 'calendar-day';
-                    dayDiv.dataset.date = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    if (currentDate.getDate() === today.getDate() &&
-                        currentDate.getMonth() === today.getMonth() &&
-                        currentDate.getFullYear() === today.getFullYear()) {
-                        dayDiv.classList.add('today');
-                    }
-                    dayDiv.textContent = day;
-                    monthGrid.appendChild(dayDiv);
-                }
-
-                calendarGrid.appendChild(monthDiv);
-            }
-
-            // 高亮已选择的日期范围
-            highlightRange();
-
-            // 移除之前的事件监听器，避免重复绑定
-            calendarGrid.removeEventListener('mousedown', startSelection);
-            calendarGrid.removeEventListener('mouseover', updateSelection);
-            calendarGrid.removeEventListener('mouseup', endSelection);
-            calendarGrid.removeEventListener('touchstart', startTouchSelection);
-            calendarGrid.removeEventListener('touchmove', updateTouchSelection);
-            calendarGrid.removeEventListener('touchend', endTouchSelection);
-
-            // 添加鼠标事件（桌面端）
-            calendarGrid.addEventListener('mousedown', startSelection);
-            calendarGrid.addEventListener('mouseover', updateSelection);
-            calendarGrid.addEventListener('mouseup', endSelection);
-
-            // 添加触摸事件（移动端）
-            calendarGrid.addEventListener('touchstart', startTouchSelection, { passive: false });
-            calendarGrid.addEventListener('touchmove', updateTouchSelection, { passive: false });
-            calendarGrid.addEventListener('touchend', endTouchSelection, { passive: false });
-        }
-
-        // 开始选择（鼠标）
-        function startSelection(e) {
-            e.preventDefault();
-            const target = e.target.closest('.calendar-day');
-            if (target && !target.classList.contains('empty') && !target.classList.contains('header')) {
-                modalIsSelecting = true;
-                modalSelectedStart = target.dataset.date;
-                modalSelectedEnd = modalSelectedStart;
-                highlightRange();
-            }
-        }
-
-        // 更新选择范围（鼠标）
-        function updateSelection(e) {
-            e.preventDefault();
-            const target = e.target.closest('.calendar-day');
-            if (modalIsSelecting && target && !target.classList.contains('empty') && !target.classList.contains('header')) {
-                modalSelectedEnd = target.dataset.date;
-                highlightRange();
-            }
-        }
-
-        // 结束选择（鼠标）
-        function endSelection() {
-            modalIsSelecting = false;
-        }
-
-        // 开始选择（触摸）
-        function startTouchSelection(e) {
-            e.preventDefault(); // 阻止默认滚动行为
-            const touch = e.touches[0];
-            const target = document.elementFromPoint(touch.clientX, touch.clientY);
-            const dayTarget = target.closest('.calendar-day');
-            if (dayTarget && !dayTarget.classList.contains('empty') && !dayTarget.classList.contains('header')) {
-                modalIsSelecting = true;
-                modalSelectedStart = dayTarget.dataset.date;
-                modalSelectedEnd = modalSelectedStart;
-                highlightRange();
-                console.log("Touch Start:", modalSelectedStart); // 调试日志
-            }
-        }
-
-        // 更新选择范围（触摸）
-        function updateTouchSelection(e) {
-            e.preventDefault(); // 阻止默认滚动行为
-            if (!modalIsSelecting) return;
-            const touch = e.touches[0];
-            const target = document.elementFromPoint(touch.clientX, touch.clientY);
-            const dayTarget = target.closest('.calendar-day');
-            if (dayTarget && !dayTarget.classList.contains('empty') && !dayTarget.classList.contains('header')) {
-                modalSelectedEnd = dayTarget.dataset.date;
-                highlightRange();
-                console.log("Touch Move:", modalSelectedEnd); // 调试日志
-            }
-        }
-
-        // 结束选择（触摸）
-        function endTouchSelection(e) {
-            e.preventDefault();
-            modalIsSelecting = false;
-            console.log("Touch End:", { start: modalSelectedStart, end: modalSelectedEnd }); // 调试日志
-        }
-
-        // 高亮选择范围
-        function highlightRange() {
-            const allDays = document.querySelectorAll('#modalCalendarGrid .calendar-day');
-            allDays.forEach(day => day.classList.remove('selected'));
-
-            if (!modalSelectedStart || !modalSelectedEnd) return;
-
-            const startDate = new Date(modalSelectedStart);
-            const endDate = new Date(modalSelectedEnd);
-            const rangeStart = startDate < endDate ? startDate : endDate;
-            const rangeEnd = startDate < endDate ? endDate : startDate;
-
-            allDays.forEach(day => {
-                if (day.dataset.date) {
-                    const currentDate = new Date(day.dataset.date);
-                    if (currentDate >= rangeStart && currentDate <= rangeEnd) {
-                        day.classList.add('selected');
-                    }
-                }
-            });
-        }
-
-        // 确认选择范围
-        function confirmRangeSelection() {
-            if (!modalSelectedStart || !modalSelectedEnd) {
-                alert('请选择一个日期范围！');
-                return;
-            }
-            let startDate = new Date(modalSelectedStart + 'T00:00:00');
-            let endDate = new Date(modalSelectedEnd + 'T23:59:59');
-            if (startDate > endDate) {
-                [startDate, endDate] = [endDate, startDate];
-            }
-            const now = new Date();
-            if (startDate < now) {
-                alert('开始时间不能早于当前时间！');
-                return;
-            }
-            document.getElementById('datetimeDisplay').value = `${startDate.toLocaleString('zh-CN', {
-                year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit'
-            })} 至 ${endDate.toLocaleString('zh-CN', {
-                year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit'
-            })}`;
-            document.getElementById('datetimeDisplay').dataset.start = startDate.toISOString();
-            document.getElementById('datetimeDisplay').dataset.end = endDate.toISOString();
-            closeCustomDatePicker();
         }
 
         // 登录
@@ -1326,9 +1144,6 @@
             document.getElementById('scheduleForm').style.display = 'block';
             document.getElementById('scheduleList').style.display = 'block';
             document.getElementById('logList').style.display = 'block';
-            loadSchedules();
-            loadLogs();
-            // 登录后立即清理系统日程
             cleanSystemSchedules();
         }
 
@@ -1350,92 +1165,43 @@
             });
         }
 
-        // 记录操作日志
-        function logAction(action, details) {
-            if (!currentUser) return;
-            const timestamp = new Date().toISOString();
-            const logEntry = {
+        // 添加日程
+        function addSchedule() {
+            if (!currentUser) {
+                alert('请先登录！');
+                return;
+            }
+            const startDatetime = document.getElementById('datetimeDisplay').dataset.start;
+            const endDatetime = document.getElementById('datetimeDisplay').dataset.end;
+            const event = document.getElementById('event').value.trim();
+
+            if (!startDatetime || !endDatetime || !event) {
+                alert('请填写所有必填项！');
+                return;
+            }
+
+            const startDate = new Date(startDatetime);
+            const endDate = new Date(endDatetime);
+            const now = new Date();
+            if (startDate < now) {
+                alert('开始时间不能早于当前时间！');
+                return;
+            }
+
+            const newSchedule = {
+                startDatetime: startDate.toISOString(),
+                endDatetime: endDate.toISOString(),
+                event: event,
                 user: currentUser,
-                action: action,
-                details: details,
-                timestamp: timestamp
+                completed: false
             };
-            logsRef.push(logEntry).catch((error) => {
-                console.error("记录日志失败:", error);
+            schedulesRef.push(newSchedule).then(() => {
+                logAction('添加日程', `事件: ${event}, 时间: ${startDate.toLocaleString('zh-CN')} 至 ${endDate.toLocaleString('zh-CN')}`);
+                document.getElementById('datetimeDisplay').value = '';
+                document.getElementById('datetimeDisplay').dataset.start = '';
+                document.getElementById('datetimeDisplay').dataset.end = '';
+                document.getElementById('event').value = '';
             });
-        }
-
-        // 加载操作日志
-        function loadLogs() {
-            logsRef.on('value', (snapshot) => {
-                logs = [];
-                const data = snapshot.val();
-                if (data) {
-                    Object.keys(data).forEach(key => {
-                        logs.push({
-                            id: key,
-                            user: data[key].user,
-                            action: data[key].action,
-                            details: data[key].details,
-                            timestamp: new Date(data[key].timestamp)
-                        });
-                    });
-                }
-                renderLogs();
-            }, (error) => {
-                console.error('加载日志失败:', error);
-                if (error.code === 'PERMISSION_DENIED') {
-                    alert('加载日志失败，请检查 Firebase 规则，当前用户无权限访问 /logs 节点。');
-                } else {
-                    alert('加载日志失败，请检查网络或 Firebase 配置: ' + error.message);
-                }
-            });
-        }
-
-        // 渲染操作日志
-        function renderLogs() {
-            const logsContainer = document.getElementById('logs');
-            const toggleBtn = document.getElementById('toggleLogsBtn');
-            logsContainer.innerHTML = '';
-            logs.sort((a, b) => b.timestamp - a.timestamp);
-
-            // 渲染所有日志条目
-            logs.forEach(log => {
-                const logItem = document.createElement('div');
-                logItem.className = 'log-item';
-                logItem.innerHTML = `${log.timestamp.toLocaleString('zh-CN')} - ${log.user} ${log.action}: ${log.details}`;
-                logsContainer.appendChild(logItem);
-            });
-
-            // 根据日志数量决定是否显示“查看更多”按钮
-            if (logs.length > 5) {
-                toggleBtn.style.display = 'inline-flex';
-                if (!isLogsExpanded) {
-                    logsContainer.classList.add('collapsed');
-                    toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 查看更多';
-                } else {
-                    logsContainer.classList.remove('collapsed');
-                    toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
-                }
-            } else {
-                toggleBtn.style.display = 'none';
-                logsContainer.classList.remove('collapsed');
-            }
-        }
-
-        // 切换日志展开/折叠状态
-        function toggleLogs() {
-            const logsContainer = document.getElementById('logs');
-            const toggleBtn = document.getElementById('toggleLogsBtn');
-            isLogsExpanded = !isLogsExpanded;
-
-            if (isLogsExpanded) {
-                logsContainer.classList.remove('collapsed');
-                toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
-            } else {
-                logsContainer.classList.add('collapsed');
-                toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 查看更多';
-            }
         }
 
         // 加载日程
@@ -1449,6 +1215,7 @@
             schedulesRef.on('value', (snapshot) => {
                 schedules = [];
                 const data = snapshot.val();
+                console.log("加载的日程数据:", data);
                 if (data) {
                     Object.keys(data).forEach(key => {
                         const schedule = data[key];
@@ -1473,27 +1240,35 @@
             });
         }
 
-        // 清理系统日程（user: '系统'）
-        function cleanSystemSchedules() {
-            schedulesRef.once('value', (snapshot) => {
+        // 加载日志
+        function loadLogs() {
+            logsRef.on('value', (snapshot) => {
+                logs = [];
                 const data = snapshot.val();
+                console.log("加载的日志数据:", data);
                 if (data) {
                     Object.keys(data).forEach(key => {
-                        const schedule = data[key];
-                        if (schedule.user === '系统') {
-                            schedulesRef.child(key).remove().then(() => {
-                                console.log(`已删除系统日程: ${schedule.event}`);
-                                logAction('删除系统日程', `事件: ${schedule.event}, 时间: ${new Date(schedule.startDatetime).toLocaleString('zh-CN')} 至 ${new Date(schedule.endDatetime).toLocaleString('zh-CN')}`);
-                            }).catch((error) => {
-                                console.error(`删除系统日程失败: ${schedule.event}`, error);
-                            });
-                        }
+                        logs.push({
+                            id: key,
+                            user: data[key].user,
+                            action: data[key].action,
+                            details: data[key].details,
+                            timestamp: new Date(data[key].timestamp)
+                        });
                     });
+                }
+                renderLogs();
+            }, (error) => {
+                console.error('加载日志失败:', error);
+                if (error.code === 'PERMISSION_DENIED') {
+                    alert('加载日志失败，请检查 Firebase 规则，当前用户无权限访问 /logs 节点。');
+                } else {
+                    alert('加载日志失败，请检查网络或 Firebase 配置: ' + error.message);
                 }
             });
         }
 
-        // 筛选日程（按用户）
+        // 筛选日程
         function filterSchedules() {
             const filterUser = document.getElementById('filterUser').value;
             let filteredSchedules = schedules;
@@ -1501,126 +1276,12 @@
             if (filterUser !== 'all') {
                 filteredSchedules = filteredSchedules.filter(schedule => schedule.user === filterUser);
             }
+            console.log("筛选后的日程:", filteredSchedules);
 
             if (currentView === 'calendar') {
                 renderCalendar(filteredSchedules);
             } else {
                 renderTimeline(filteredSchedules);
-            }
-        }
-
-        // 切换视图
-        function switchView(view) {
-            currentView = view;
-            const calendarView = document.getElementById('calendarView');
-            const timelineView = document.getElementById('timelineView');
-            const calendarBtn = document.getElementById('calendarViewBtn');
-            const timelineBtn = document.getElementById('timelineViewBtn');
-
-            if (view === 'calendar') {
-                calendarView.style.display = 'block';
-                timelineView.style.display = 'none';
-                calendarBtn.classList.add('active');
-                timelineBtn.classList.remove('active');
-                renderCalendar(schedules);
-            } else {
-                calendarView.style.display = 'none';
-                timelineView.style.display = 'block';
-                calendarBtn.classList.remove('active');
-                timelineBtn.classList.add('active');
-                renderTimeline(schedules);
-            }
-            filterSchedules();
-        }
-
-        // 切换月份
-        function changeMonth(delta) {
-            currentMonth.setMonth(currentMonth.getMonth() + delta);
-            renderCalendar(schedules);
-        }
-
-        // 渲染日历视图（点击弹出模态框）
-        function renderCalendar(filteredSchedules) {
-            const calendarGrid = document.getElementById('calendarGrid');
-            const calendarMonth = document.getElementById('calendarMonth');
-            calendarGrid.innerHTML = '';
-
-            // 设置月份标题
-            calendarMonth.textContent = `${currentMonth.getFullYear()}年 ${currentMonth.getMonth() + 1}月`;
-
-            // 添加星期头部
-            const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
-            daysOfWeek.forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'calendar-day header';
-                dayHeader.textContent = day;
-                calendarGrid.appendChild(dayHeader);
-            });
-
-            // 获取当前月份的第一天和最后一天
-            const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-            const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
-            const today = new Date();
-
-            // 计算第一天是星期几
-            const startDay = firstDayOfMonth.getDay();
-
-            // 添加空白格子
-            for (let i = 0; i < startDay; i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.className = 'calendar-day empty';
-                calendarGrid.appendChild(emptyDay);
-            }
-
-            // 添加日期格子
-            for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-                const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'calendar-day';
-                if (currentDate.getDate() === today.getDate() &&
-                    currentDate.getMonth() === today.getMonth() &&
-                    currentDate.getFullYear() === today.getFullYear()) {
-                    dayDiv.classList.add('today');
-                }
-                // 添加日期数字
-                const dayNumber = document.createElement('div');
-                dayNumber.className = 'day-number';
-                dayNumber.textContent = day;
-                dayDiv.appendChild(dayNumber);
-
-                // 查找该日期的日程
-                filteredSchedules.forEach(schedule => {
-                    const startDate = new Date(schedule.startDatetime);
-                    const endDate = new Date(schedule.endDatetime);
-                    const currentDateStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-                    const currentDateEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
-
-                    if (startDate <= currentDateEnd && endDate >= currentDateStart) {
-                        const avatar = {
-                            '吴乐乐': { color: '#e74c3c', initial: '吴' },
-                            '冯妈妈': { color: '#3498db', initial: '冯' },
-                            '张宝宝': { color: '#2ecc71', initial: '张' },
-                            '懒宝': { color: '#f1c40f', initial: '懒' }
-                        }[schedule.user] || { color: '#95a5a6', initial: schedule.user[0] };
-
-                        const eventDiv = document.createElement('div');
-                        eventDiv.className = `calendar-event ${schedule.completed ? 'completed' : ''}`;
-                        eventDiv.innerHTML = `
-                            <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
-                            <div class="content">
-                                <div class="event-text">${schedule.event}</div>
-                                <div class="added-by">添加者: ${schedule.user}</div>
-                            </div>
-                        `;
-                        // 添加点击事件，弹出模态框
-                        eventDiv.addEventListener('click', () => {
-                            openScheduleDetailModal(schedule);
-                        });
-                        dayDiv.appendChild(eventDiv);
-                    }
-                });
-
-                calendarGrid.appendChild(dayDiv);
             }
         }
 
@@ -1666,87 +1327,472 @@
                     </div>
                     <div class="actions">
                         <input type="checkbox" class="checkbox" ${schedule.completed ? 'checked' : ''} onchange="toggleComplete('${schedule.id}', this)">
-                        <button class="delete-btn" onclick="deleteSchedule('${schedule.id}', '${schedule.event}', '${startFormatted} 至 ${endFormatted}')"><i class="fas fa-trash-alt"></i> 删除</button>
+                        <button class="delete-btn" data-id="${schedule.id}" data-event="${schedule.event}" data-datetime="${startFormatted} 至 ${endFormatted}"><i class="fas fa-trash-alt"></i> 删除</button>
                     </div>
                 `;
                 timeline.appendChild(timelineItem);
+
+                timelineItem.addEventListener('click', (e) => {
+                    if (!e.target.closest('.actions')) {
+                        openScheduleDetailModal(schedule);
+                    }
+                });
+
+                const deleteBtn = timelineItem.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', () => {
+                    const id = deleteBtn.dataset.id;
+                    const event = deleteBtn.dataset.event;
+                    const datetime = deleteBtn.dataset.datetime;
+                    deleteSchedule(id, event, datetime);
+                });
             });
         }
 
-        // 添加日程
-        function addSchedule() {
-            if (!currentUser) {
-                alert('请先登录！');
+        // 切换完成状态
+        function toggleComplete(id, checkbox) {
+            const schedule = schedules.find(s => s.id === id);
+            if (schedule) {
+                schedulesRef.child(id).update({ completed: checkbox.checked }).then(() => {
+                    logAction('更新日程状态', `事件: ${schedule.event}, 状态: ${checkbox.checked ? '已完成' : '未完成'}`);
+                });
+            }
+        }
+
+        // 删除日程
+        function deleteSchedule(id, event, datetime) {
+            console.log("deleteSchedule 被调用", id, event, datetime);
+            if (confirm(`确定要删除日程 "${event}" (${datetime}) 吗？`)) {
+                schedulesRef.child(id).remove().then(() => {
+                    logAction('删除日程', `事件: ${event}, 时间: ${datetime}`);
+                });
+            }
+        }
+
+        // 切换视图
+        function switchView(view) {
+            console.log("switchView 被调用", view);
+            currentView = view;
+            document.getElementById('calendarView').style.display = view === 'calendar' ? 'block' : 'none';
+            document.getElementById('timelineView').style.display = view === 'timeline' ? 'block' : 'none';
+            document.getElementById('calendarViewBtn').classList.toggle('active', view === 'calendar');
+            document.getElementById('timelineViewBtn').classList.toggle('active', view === 'timeline');
+            filterSchedules();
+        }
+
+        // 更改月份
+        function changeMonth(delta) {
+            currentMonth.setMonth(currentMonth.getMonth() + delta);
+            filterSchedules();
+        }
+
+        // 渲染日历视图
+        function renderCalendar(filteredSchedules) {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const calendarMonth = document.getElementById('calendarMonth');
+            calendarGrid.innerHTML = '';
+
+            calendarMonth.textContent = `${currentMonth.getFullYear()}年 ${currentMonth.getMonth() + 1}月`;
+
+            const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+            daysOfWeek.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+
+            const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+            const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+            const startDay = firstDayOfMonth.getDay();
+            const today = new Date();
+
+            for (let i = 0; i < startDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+                const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                if (currentDate.getDate() === today.getDate() &&
+                    currentDate.getMonth() === today.getMonth() &&
+                    currentDate.getFullYear() === today.getFullYear()) {
+                    dayDiv.classList.add('today');
+                }
+
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayDiv.appendChild(dayNumber);
+
+                const daySchedules = filteredSchedules.filter(schedule => {
+                    const scheduleDate = new Date(schedule.startDatetime);
+                    return scheduleDate.getDate() === day &&
+                           scheduleDate.getMonth() === currentMonth.getMonth() &&
+                           scheduleDate.getFullYear() === currentMonth.getFullYear();
+                });
+
+                daySchedules.forEach(schedule => {
+                    const eventDiv = document.createElement('div');
+                    eventDiv.className = `calendar-event ${schedule.completed ? 'completed' : ''}`;
+                    const avatar = {
+                        '吴乐乐': { color: '#e74c3c', initial: '吴' },
+                        '冯妈妈': { color: '#3498db', initial: '冯' },
+                        '张宝宝': { color: '#2ecc71', initial: '张' },
+                        '懒宝': { color: '#f1c40f', initial: '懒' }
+                    }[schedule.user] || { color: '#95a5a6', initial: schedule.user[0] };
+
+                    eventDiv.innerHTML = `
+                        <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
+                        <div class="content">
+                            <div class="event-text">${schedule.event}</div>
+                            <div class="added-by">添加者: ${schedule.user}</div>
+                        </div>
+                    `;
+                    eventDiv.addEventListener('click', () => openScheduleDetailModal(schedule));
+                    dayDiv.appendChild(eventDiv);
+                });
+
+                calendarGrid.appendChild(dayDiv);
+            }
+        }
+
+        // 打开自定义日期选择器
+        function openCustomDatePicker() {
+            console.log("openCustomDatePicker 被调用");
+            const modal = document.getElementById('datePickerModal');
+            modalStartMonth = new Date();
+            modalIsSelecting = false;
+            modalSelectedStart = null;
+            modalSelectedEnd = null;
+            renderModalCalendar();
+            openModal(modal);
+        }
+
+        // 关闭自定义日期选择器
+        function closeCustomDatePicker() {
+            console.log("closeCustomDatePicker 被调用");
+            const modal = document.getElementById('datePickerModal');
+            closeModal(modal);
+            modalIsSelecting = false;
+            modalSelectedStart = null;
+            modalSelectedEnd = null;
+            document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('selected'));
+        }
+
+        // 打开日程详情模态框
+        function openScheduleDetailModal(schedule) {
+            console.log("openScheduleDetailModal 被调用", schedule);
+            const modal = document.getElementById('scheduleDetailModal');
+            const content = document.getElementById('scheduleDetailContent');
+            const startDate = new Date(schedule.startDatetime);
+            const endDate = new Date(schedule.endDatetime);
+            const avatar = {
+                '吴乐乐': { color: '#e74c3c', initial: '吴' },
+                '冯妈妈': { color: '#3498db', initial: '冯' },
+                '张宝宝': { color: '#2ecc71', initial: '张' },
+                '懒宝': { color: '#f1c40f', initial: '懒' }
+            }[schedule.user] || { color: '#95a5a6', initial: schedule.user[0] };
+
+            const startFormatted = startDate.toLocaleString('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit',
+                timeZone: 'Asia/Shanghai'
+            });
+            const endFormatted = endDate.toLocaleString('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit',
+                timeZone: 'Asia/Shanghai'
+            });
+
+            content.innerHTML = `
+                <div class="detail-item ${schedule.completed ? 'completed' : ''}">
+                    <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
+                    <div class="content">
+                        <div class="time-range">${startFormatted} 至 ${endFormatted}</div>
+                        <div class="event-text">事件: ${schedule.event}</div>
+                        <div class="added-by">添加者: ${schedule.user}</div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <input type="checkbox" class="checkbox" ${schedule.completed ? 'checked' : ''} onchange="toggleComplete('${schedule.id}', this)">
+                    <button class="delete-btn" data-id="${schedule.id}" data-event="${schedule.event}" data-datetime="${startFormatted} 至 ${endFormatted}"><i class="fas fa-trash-alt"></i> 删除</button>
+                </div>
+            `;
+            openModal(modal);
+
+            const deleteBtn = content.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', () => {
+                const id = deleteBtn.dataset.id;
+                const event = deleteBtn.dataset.event;
+                const datetime = deleteBtn.dataset.datetime;
+                deleteSchedule(id, event, datetime);
+            });
+        }
+
+        // 关闭日程详情模态框
+        function closeScheduleDetailModal() {
+            console.log("closeScheduleDetailModal 被调用");
+            const modal = document.getElementById('scheduleDetailModal');
+            closeModal(modal);
+        }
+
+        // 切换模态框月份
+        function changeModalMonth(delta) {
+            console.log("changeModalMonth 被调用", delta);
+            modalStartMonth.setMonth(modalStartMonth.getMonth() + delta);
+            renderModalCalendar();
+        }
+
+        // 渲染模态框日历
+        function renderModalCalendar() {
+            console.log("renderModalCalendar 被调用");
+            const calendarGrid = document.getElementById('modalCalendarGrid');
+            calendarGrid.innerHTML = '';
+
+            const monthsToShow = 2;
+            const today = new Date();
+
+            for (let i = 0; i < monthsToShow; i++) {
+                const currentMonth = new Date(modalStartMonth.getFullYear(), modalStartMonth.getMonth() + i, 1);
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'calendar-month';
+
+                const monthTitle = document.createElement('h4');
+                monthTitle.textContent = `${currentMonth.getFullYear()}年 ${currentMonth.getMonth() + 1}月`;
+                monthDiv.appendChild(monthTitle);
+
+                const monthGrid = document.createElement('div');
+                monthGrid.className = 'calendar-grid';
+                monthDiv.appendChild(monthGrid);
+
+                const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+                daysOfWeek.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'calendar-day header';
+                    dayHeader.textContent = day;
+                    monthGrid.appendChild(dayHeader);
+                });
+
+                const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+                const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+                const startDay = firstDayOfMonth.getDay();
+
+                for (let j = 0; j < startDay; j++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day empty';
+                    monthGrid.appendChild(emptyDay);
+                }
+
+                for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+                    const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'calendar-day';
+                    dayDiv.dataset.date = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    if (currentDate.getDate() === today.getDate() &&
+                        currentDate.getMonth() === today.getMonth() &&
+                        currentDate.getFullYear() === today.getFullYear()) {
+                        dayDiv.classList.add('today');
+                    }
+                    dayDiv.textContent = day;
+                    monthGrid.appendChild(dayDiv);
+                }
+
+                calendarGrid.appendChild(monthDiv);
+            }
+
+            highlightRange();
+
+            calendarGrid.removeEventListener('mousedown', startSelection);
+            calendarGrid.removeEventListener('mouseover', updateSelection);
+            calendarGrid.removeEventListener('mouseup', endSelection);
+            calendarGrid.removeEventListener('touchstart', startTouchSelection);
+            calendarGrid.removeEventListener('touchmove', updateTouchSelection);
+            calendarGrid.removeEventListener('touchend', endTouchSelection);
+
+            calendarGrid.addEventListener('mousedown', startSelection);
+            calendarGrid.addEventListener('mouseover', updateSelection);
+            calendarGrid.addEventListener('mouseup', endSelection);
+            calendarGrid.addEventListener('touchstart', startTouchSelection, { passive: false });
+            calendarGrid.addEventListener('touchmove', updateTouchSelection, { passive: false });
+            calendarGrid.addEventListener('touchend', endTouchSelection, { passive: false });
+        }
+
+        // 开始选择
+        function startSelection(e) {
+            const day = e.target.closest('.calendar-day:not(.empty):not(.header)');
+            if (day) {
+                modalIsSelecting = true;
+                modalSelectedStart = day.dataset.date;
+                modalSelectedEnd = day.dataset.date;
+                highlightRange();
+            }
+        }
+
+        // 更新选择
+        function updateSelection(e) {
+            if (modalIsSelecting) {
+                const day = e.target.closest('.calendar-day:not(.empty):not(.header)');
+                if (day) {
+                    modalSelectedEnd = day.dataset.date;
+                    highlightRange();
+                }
+            }
+        }
+
+        // 结束选择
+        function endSelection() {
+            modalIsSelecting = false;
+        }
+
+        // 开始触摸选择
+        function startTouchSelection(e) {
+            e.preventDefault();
+            const day = e.target.closest('.calendar-day:not(.empty):not(.header)');
+            if (day) {
+                modalIsSelecting = true;
+                modalSelectedStart = day.dataset.date;
+                modalSelectedEnd = day.dataset.date;
+                highlightRange();
+            }
+        }
+
+        // 更新触摸选择
+        function updateTouchSelection(e) {
+            e.preventDefault();
+            if (modalIsSelecting) {
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                const day = element.closest('.calendar-day:not(.empty):not(.header)');
+                if (day) {
+                    modalSelectedEnd = day.dataset.date;
+                    highlightRange();
+                }
+            }
+        }
+
+        // 结束触摸选择
+        function endTouchSelection(e) {
+            e.preventDefault();
+            modalIsSelecting = false;
+        }
+
+        // 高亮选择范围
+        function highlightRange() {
+            const days = document.querySelectorAll('#modalCalendarGrid .calendar-day');
+            let startDate = modalSelectedStart ? new Date(modalSelectedStart) : null;
+            let endDate = modalSelectedEnd ? new Date(modalSelectedEnd) : null;
+
+            if (startDate && endDate && startDate > endDate) {
+                [startDate, endDate] = [endDate, startDate];
+                [modalSelectedStart, modalSelectedEnd] = [modalSelectedEnd, modalSelectedStart];
+            }
+
+            days.forEach(day => {
+                day.classList.remove('selected');
+                const dayDate = day.dataset.date ? new Date(day.dataset.date) : null;
+                if (dayDate && startDate && endDate) {
+                    if (dayDate >= startDate && dayDate <= endDate) {
+                        day.classList.add('selected');
+                    }
+                }
+            });
+        }
+
+        // 确认选择范围
+        function confirmRangeSelection() {
+            if (!modalSelectedStart || !modalSelectedEnd) {
+                alert('请选择一个时间范围！');
                 return;
             }
-            const startDatetime = document.getElementById('datetimeDisplay').dataset.start;
-            const endDatetime = document.getElementById('datetimeDisplay').dataset.end;
-            const event = document.getElementById('event').value.trim();
 
-            if (!startDatetime || !endDatetime || !event) {
-                alert('请填写所有必填项！');
-                return;
+            let startDate = new Date(modalSelectedStart);
+            let endDate = new Date(modalSelectedEnd);
+
+            if (startDate > endDate) {
+                [startDate, endDate] = [endDate, startDate];
             }
 
-            const startDate = new Date(startDatetime);
-            const endDate = new Date(endDatetime);
             const now = new Date();
             if (startDate < now) {
                 alert('开始时间不能早于当前时间！');
                 return;
             }
 
-            const newSchedule = {
-                startDatetime: startDate.toISOString(),
-                endDatetime: endDate.toISOString(),
-                event: event,
-                user: currentUser,
-                completed: false
+            const startFormatted = startDate.toLocaleString('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit'
+            });
+            const endFormatted = endDate.toLocaleString('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit'
+            });
+
+            startDate.setHours(9, 0, 0, 0);
+            endDate.setHours(10, 0, 0, 0);
+
+            document.getElementById('datetimeDisplay').value = `${startFormatted} 至 ${endFormatted}`;
+            document.getElementById('datetimeDisplay').dataset.start = startDate.toISOString();
+            document.getElementById('datetimeDisplay').dataset.end = endDate.toISOString();
+
+            closeCustomDatePicker();
+        }
+
+        // 渲染日志
+        function renderLogs() {
+            const logsContainer = document.getElementById('logs');
+            const toggleBtn = document.getElementById('toggleLogsBtn');
+            logsContainer.innerHTML = '';
+            logs.sort((a, b) => b.timestamp - a.timestamp);
+            console.log("渲染的日志:", logs);
+
+            logs.forEach(log => {
+                const logItem = document.createElement('div');
+                logItem.className = 'log-item';
+                logItem.innerHTML = `${log.timestamp.toLocaleString('zh-CN')} - ${log.user} ${log.action}: ${log.details}`;
+                logsContainer.appendChild(logItem);
+            });
+
+            if (logs.length > 5) {
+                toggleBtn.style.display = 'inline-flex';
+                if (!isLogsExpanded) {
+                    logsContainer.classList.add('collapsed');
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 查看更多';
+                } else {
+                    logsContainer.classList.remove('collapsed');
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+                }
+            } else {
+                toggleBtn.style.display = 'none';
+                logsContainer.classList.remove('collapsed');
+            }
+        }
+
+        // 切换日志展开/收起
+        function toggleLogs() {
+            const logsContainer = document.getElementById('logs');
+            const toggleBtn = document.getElementById('toggleLogsBtn');
+            isLogsExpanded = !isLogsExpanded;
+            if (isLogsExpanded) {
+                logsContainer.classList.remove('collapsed');
+                toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+            } else {
+                logsContainer.classList.add('collapsed');
+                toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 查看更多';
+            }
+        }
+
+        // 记录操作日志
+        function logAction(action, details) {
+            const logEntry = {
+                user: currentUser || '未知用户',
+                action: action,
+                details: details,
+                timestamp: new Date().toISOString()
             };
-            schedulesRef.push(newSchedule).then(() => {
-                logAction('添加日程', `事件: ${event}, 时间: ${startDate.toLocaleString('zh-CN')} 至 ${endDate.toLocaleString('zh-CN')}`);
-                document.getElementById('datetimeDisplay').value = '';
-                document.getElementById('datetimeDisplay').dataset.start = '';
-                document.getElementById('datetimeDisplay').dataset.end = '';
-                document.getElementById('event').value = '';
-            });
-        }
-
-        // 切换完成状态
-        function toggleComplete(id, checkbox) {
-            if (!currentUser) {
-                alert('请先登录！');
-                return;
-            }
-            schedulesRef.child(id).update({ completed: checkbox.checked }).then(() => {
-                const schedule = schedules.find(s => s.id === id);
-                logAction('标记日程', `事件: ${schedule.event}, 状态: ${checkbox.checked ? '已完成' : '未完成'}`);
-                closeScheduleDetailModal(); // 关闭模态框
-            }).catch((error) => {
-                console.error("更新完成状态失败:", error);
-                alert("更新完成状态失败: " + error.message);
-            });
-        }
-
-        // 删除日程
-        function deleteSchedule(id, event, datetime) {
-            if (!currentUser) {
-                alert('请先登录！');
-                return;
-            }
-            console.log("尝试删除日程，ID:", id); // 调试日志
-            if (!id) {
-                alert('日程 ID 无效，无法删除！');
-                return;
-            }
-            schedulesRef.child(id).remove().then(() => {
-                console.log("日程删除成功，ID:", id);
-                logAction('删除日程', `事件: ${event}, 时间: ${datetime}`);
-                closeScheduleDetailModal(); // 关闭模态框
-            }).catch((error) => {
-                console.error("删除日程失败:", error);
-                alert("删除日程失败: " + error.message);
-            });
+            logsRef.push(logEntry);
         }
     </script>
 </body>
