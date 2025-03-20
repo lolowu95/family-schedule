@@ -1,5 +1,3 @@
-import { getSchedules } from './schedule.js';
-
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let modalMonth = currentMonth;
