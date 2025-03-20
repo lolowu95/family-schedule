@@ -38,9 +38,13 @@ function verifyPassword() {
         passwordContainerElement.style.display = 'none';
         loginContainerElement.style.display = 'block';
         passwordErrorElement.style.display = 'none';
+        inputPasswordElement.value = ''; // 清空输入
     } else {
+        passwordErrorElement.textContent = '密码错误，请重试！（提示：密码是 wxl641812）';
         passwordErrorElement.style.display = 'block';
         console.log("密码错误");
+        inputPasswordElement.value = '';
+        inputPasswordElement.focus();
     }
 }
 
@@ -55,6 +59,7 @@ function login() {
     auth.signInAnonymously().then(() => {
         currentUser = username;
         console.log("当前用户:", currentUser);
+        localStorage.setItem('currentUser', username); // 持久化当前用户
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('scheduleForm').style.display = 'block';
         document.getElementById('scheduleList').style.display = 'block';
@@ -68,12 +73,15 @@ function login() {
 function logout() {
     auth.signOut().then(() => {
         currentUser = null;
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('accessVerified');
         document.getElementById('loginContainer').style.display = 'block';
         document.getElementById('scheduleForm').style.display = 'none';
         document.getElementById('scheduleList').style.display = 'none';
         document.getElementById('logList').style.display = 'none';
         document.getElementById('username').value = '';
         console.log("已登出");
+        location.reload(); // 刷新页面以重置状态
     }).catch((error) => {
         console.error("登出失败:", error);
         alert("登出失败: " + error.message);
@@ -81,7 +89,7 @@ function logout() {
 }
 
 function getCurrentUser() {
-    return currentUser;
+    return currentUser || localStorage.getItem('currentUser');
 }
 
 export { verifyPassword, login, logout, getCurrentUser };
