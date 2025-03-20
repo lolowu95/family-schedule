@@ -16,13 +16,36 @@
             background: linear-gradient(135deg, #a1c4fd, #c2e9fb); 
             min-height: 100vh; 
             color: #2c3e50; 
+            position: relative; 
+            overflow-x: hidden; 
+        }
+        /* 动态背景效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            animation: backgroundPulse 15s infinite ease-in-out;
+            z-index: -1;
+        }
+        @keyframes backgroundPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
         }
         h1 { 
             text-align: center; 
             font-size: 2.8em; 
             margin-bottom: 30px; 
             color: #1e3a8a; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2); 
+            animation: fadeInDown 1s ease-out; 
+        }
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         .password-container, .login-container, .schedule-form { 
             background: rgba(255, 255, 255, 0.95); 
@@ -31,10 +54,15 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
             margin-bottom: 30px; 
             transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            animation: fadeIn 0.8s ease-out; 
         }
         .password-container:hover, .login-container:hover, .schedule-form:hover { 
             transform: translateY(-5px); 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25); 
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
         }
         .form-group { 
             margin-bottom: 20px; 
@@ -56,7 +84,7 @@
             border: 2px solid #dfe6e9; 
             border-radius: 8px; 
             font-size: 1em; 
-            transition: border-color 0.3s ease, box-shadow 0.3s ease; 
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; 
             background: #f8f9fa; 
             position: relative; 
             z-index: 1; 
@@ -71,6 +99,7 @@
             outline: none; 
             border-color: #1e90ff; 
             box-shadow: 0 0 8px rgba(30, 144, 255, 0.3); 
+            transform: scale(1.02); 
         }
         .datetime-group { 
             display: flex; 
@@ -81,7 +110,7 @@
             flex-grow: 1; 
         }
         button { 
-            background: #1e90ff; 
+            background: linear-gradient(45deg, #1e90ff, #00c4ff); 
             color: white; 
             padding: 12px 25px; 
             border: none; 
@@ -95,11 +124,30 @@
             gap: 8px; 
             width: 100%; 
             margin-top: 10px; 
+            position: relative; 
+            overflow: hidden; 
         }
         button:hover { 
-            background: #187bcd; 
+            background: linear-gradient(45deg, #187bcd, #00aaff); 
             transform: translateY(-2px); 
             box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4); 
+        }
+        /* 按钮波纹效果 */
+        button::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        button:active::after {
+            width: 300px;
+            height: 300px;
         }
         .error-message { 
             color: #e74c3c; 
@@ -113,6 +161,7 @@
             border-radius: 15px; 
             box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
             margin-bottom: 30px; 
+            animation: fadeIn 0.8s ease-out; 
         }
         .schedule-list h2, .log-list h2 { 
             color: #1e3a8a; 
@@ -142,11 +191,12 @@
             font-size: 0.9em; 
         }
         .view-toggle button.active { 
-            background: #187bcd; 
+            background: linear-gradient(45deg, #187bcd, #00aaff); 
         }
         .timeline { 
             position: relative; 
             padding-left: 50px; 
+            scroll-behavior: smooth; 
         }
         .timeline::before { 
             content: ''; 
@@ -155,7 +205,7 @@
             top: 0; 
             bottom: 0; 
             width: 3px; 
-            background: #1e90ff; 
+            background: linear-gradient(to bottom, #1e90ff, #00c4ff); 
         }
         .timeline-item { 
             position: relative; 
@@ -164,14 +214,23 @@
             padding: 20px; 
             border-radius: 10px; 
             box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
-            transition: transform 0.3s ease, background 0.3s ease; 
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease; 
             display: flex; 
             align-items: flex-start; 
             gap: 10px; 
+            animation: slideIn 0.5s ease-out; 
+        }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
         }
         .timeline-item:hover { 
             transform: translateX(5px); 
             background: #e6f0fa; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+        }
+        .timeline-item:active { 
+            transform: scale(0.98); 
         }
         .timeline-item::before { 
             content: ''; 
@@ -183,6 +242,10 @@
             background: #1e90ff; 
             border-radius: 50%; 
             border: 3px solid white; 
+            transition: transform 0.3s ease; 
+        }
+        .timeline-item:hover::before { 
+            transform: scale(1.2); 
         }
         .timeline-item.completed::before { 
             background: #2ecc71; 
@@ -198,24 +261,28 @@
             justify-content: center; 
             flex-shrink: 0; 
             font-size: 1.2em; 
+            transition: transform 0.3s ease; 
+        }
+        .timeline-item:hover .avatar { 
+            transform: rotate(360deg); 
         }
         .timeline-item .content { 
             flex-grow: 1; 
         }
         .timeline-item .date-time { 
-            color: #7f8c8d; /* 颜色更浅 */
-            font-size: 0.95em; /* 字体稍小 */
+            color: #7f8c8d; 
+            font-size: 0.95em; 
             margin-bottom: 5px; 
         }
         .timeline-item .event { 
-            color: #2c3e50; /* 颜色更深 */
-            font-size: 1.2em; /* 字体更大 */
-            font-weight: bold; /* 加粗 */
+            color: #2c3e50; 
+            font-size: 1.2em; 
+            font-weight: bold; 
             margin-bottom: 5px; 
         }
         .timeline-item .added-by { 
             color: #e67e22; 
-            font-size: 0.85em; /* 字体稍小 */
+            font-size: 0.85em; 
         }
         .timeline-item .actions { 
             display: flex; 
@@ -230,13 +297,18 @@
             border-radius: 6px; 
             cursor: pointer; 
             font-size: 0.85em; 
-            transition: background 0.3s ease; 
+            transition: background 0.3s ease, transform 0.2s ease; 
         }
         .timeline-item .delete-btn:hover { 
             background: #c0392b; 
+            transform: scale(1.1); 
         }
         .timeline-item .checkbox { 
             transform: scale(1.1); 
+            transition: transform 0.2s ease; 
+        }
+        .timeline-item .checkbox:hover { 
+            transform: scale(1.3); 
         }
         .timeline-item.completed .event { 
             text-decoration: line-through; 
@@ -268,6 +340,7 @@
             border: 1px solid #dfe6e9; 
             font-size: 0.9em; 
             position: relative; 
+            transition: transform 0.2s ease, background 0.3s ease; 
         }
         .calendar-day.header { 
             background: #1e90ff; 
@@ -284,6 +357,10 @@
         }
         .calendar-day.today { 
             border: 2px solid #1e90ff; 
+            background: #e6f0fa; 
+        }
+        .calendar-day:hover:not(.empty):not(.header) { 
+            transform: scale(1.05); 
             background: #e6f0fa; 
         }
         .calendar-day .day-number { 
@@ -306,10 +383,14 @@
             position: relative; 
             top: 20px; 
             cursor: pointer; 
-            transition: background 0.3s ease; 
+            transition: background 0.3s ease, transform 0.2s ease; 
         }
         .calendar-event:hover { 
             background: #e6f0fa; 
+            transform: translateY(-2px); 
+        }
+        .calendar-event:active { 
+            transform: scale(0.98); 
         }
         .calendar-event.completed { 
             background: #e6f0fa; 
@@ -329,6 +410,10 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
+            transition: transform 0.3s ease; 
+        }
+        .calendar-event:hover .avatar { 
+            transform: rotate(360deg); 
         }
         .calendar-event .content { 
             flex-grow: 1; 
@@ -362,6 +447,12 @@
             height: 100%; 
             background: rgba(0,0,0,0.5); 
             z-index: 1000; 
+            opacity: 0; 
+            transition: opacity 0.3s ease; 
+        }
+        .modal.show { 
+            display: block; 
+            opacity: 1; 
         }
         .modal-content { 
             background: white; 
@@ -374,8 +465,12 @@
             position: absolute; 
             top: 50%; 
             left: 50%; 
-            transform: translate(-50%, -50%); 
+            transform: translate(-50%, -50%) scale(0.9); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            transition: transform 0.3s ease; 
+        }
+        .modal.show .modal-content { 
+            transform: translate(-50%, -50%) scale(1); 
         }
         .modal-content h3 { 
             margin-bottom: 10px; 
@@ -419,7 +514,8 @@
             border: 1px solid #dfe6e9; 
             font-size: 0.9em; 
             cursor: pointer; 
-            transition: background 0.3s ease; 
+            transition: background 0.3s ease, transform 0.2s ease; 
+            touch-action: none; /* 禁用默认触摸行为 */
         }
         .calendar-day.header { 
             background: #1e90ff; 
@@ -443,6 +539,7 @@
         }
         .calendar-day:hover:not(.empty):not(.header) { 
             background: #e6f0fa; 
+            transform: scale(1.1); 
         }
         /* 日程详情模态框样式 */
         .schedule-detail-modal .modal-content { 
@@ -516,9 +613,13 @@
             border-bottom: 1px solid #ecf0f1; 
             font-size: 0.95em; 
             color: #34495e; 
+            transition: background 0.3s ease; 
         }
         .log-item:last-child { 
             border-bottom: none; 
+        }
+        .log-item:hover { 
+            background: #f0f4f8; 
         }
         /* 操作日志折叠样式 */
         .log-list .logs-container { 
@@ -529,7 +630,7 @@
             display: none; 
         }
         .log-list .toggle-btn { 
-            background: #1e90ff; 
+            background: linear-gradient(45deg, #1e90ff, #00c4ff); 
             color: white; 
             padding: 8px 15px; 
             border: none; 
@@ -541,31 +642,42 @@
             display: inline-flex; 
             align-items: center; 
             gap: 5px; 
-            transition: background 0.3s ease; 
+            transition: background 0.3s ease, transform 0.2s ease; 
             width: auto; 
         }
         .log-list .toggle-btn:hover { 
-            background: #187bcd; 
+            background: linear-gradient(45deg, #187bcd, #00aaff); 
+            transform: scale(1.05); 
         }
         /* 移动端优化 */
         @media (max-width: 600px) { 
-            body { padding: 15px; } 
-            h1 { font-size: 2em; } 
+            body { 
+                padding: 10px; 
+                background: linear-gradient(135deg, #a1c4fd, #c2e9fb); 
+            } 
+            h1 { 
+                font-size: 2em; 
+                margin-bottom: 20px; 
+            } 
             .password-container, .login-container, .schedule-form, .schedule-list, .log-list { 
                 padding: 15px; 
+                border-radius: 10px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
             } 
             .form-group label { 
-                font-size: 1em; 
+                font-size: 0.95em; 
             } 
             input, select, button { 
                 font-size: 0.9em; 
                 padding: 10px; 
+                border-radius: 6px; 
             } 
             button { 
                 padding: 10px 20px; 
             } 
             .timeline { 
                 padding-left: 40px; 
+                -webkit-overflow-scrolling: touch; /* 优化移动端滚动 */
             } 
             .timeline::before { 
                 left: 20px; 
@@ -573,6 +685,7 @@
             .timeline-item { 
                 padding: 15px; 
                 gap: 8px; 
+                border-radius: 8px; 
             } 
             .timeline-item::before { 
                 left: -32px; 
@@ -603,8 +716,9 @@
             } 
             .calendar-day { 
                 padding: 3px; 
-                height: 120px; 
+                height: 100px; 
                 font-size: 0.8em; 
+                border-radius: 4px; 
             } 
             .calendar-day.header { 
                 height: 30px; 
@@ -617,6 +731,7 @@
                 padding: 3px; 
                 font-size: 0.75em; 
                 gap: 4px; 
+                border-radius: 4px; 
             } 
             .calendar-event .avatar { 
                 width: 20px; 
@@ -631,6 +746,7 @@
             } 
             .log-item { 
                 font-size: 0.85em; 
+                padding: 8px; 
             } 
             .datetime-group { 
                 flex-direction: column; 
@@ -639,11 +755,15 @@
             .datetime-group button { 
                 width: 100%; 
             } 
+            .modal { 
+                padding: 10px; 
+            } 
             .modal-content { 
                 width: 95%; 
-                max-width: 400px; 
-                max-height: 70vh; 
+                max-width: 350px; 
+                max-height: 85vh; 
                 padding: 10px; 
+                border-radius: 8px; 
             } 
             .modal-content h3 { 
                 font-size: 1em; 
@@ -660,7 +780,7 @@
                 font-size: 0.8em; 
             } 
             .schedule-detail-modal .modal-content { 
-                max-width: 280px; 
+                max-width: 300px; 
             } 
             .schedule-detail-modal .avatar { 
                 width: 30px; 
@@ -832,14 +952,6 @@
             schedulesRef = db.ref('schedules');
             logsRef = db.ref('logs');
             console.log("Firebase 初始化成功");
-
-            // 验证匿名登录权限
-            auth.signInAnonymously().then(() => {
-                console.log("匿名登录成功");
-            }).catch((error) => {
-                console.error("匿名登录失败:", error);
-                alert("匿名登录失败，可能需要检查 Firebase 规则: " + error.message);
-            });
         } catch (error) {
             console.error("Firebase 初始化失败:", error);
             alert("Firebase 初始化失败: " + error.message);
@@ -851,21 +963,26 @@
             return !isNaN(date.getTime());
         }
 
-        // 密码验证
+        // 密码验证（使用 Firebase Authentication）
         function verifyPassword() {
             console.log("verifyPassword 函数被调用");
             const inputPassword = document.getElementById('accessPassword').value;
-            const encodedCorrectPassword = 'd3hsNjQxODEy'; // 一层 Base64 编码
-            const decodedCorrectPassword = atob(encodedCorrectPassword);
             const passwordError = document.getElementById('passwordError');
-            if (inputPassword === decodedCorrectPassword) {
-                localStorage.setItem('accessVerified', 'true');
-                document.getElementById('passwordContainer').style.display = 'none';
-                document.getElementById('loginContainer').style.display = 'block';
-                passwordError.style.display = 'none';
-            } else {
-                passwordError.style.display = 'block';
-            }
+            const email = "family@example.com"; // 共享账户邮箱
+
+            auth.signInWithEmailAndPassword(email, inputPassword)
+                .then((userCredential) => {
+                    // 登录成功
+                    localStorage.setItem('accessVerified', 'true');
+                    document.getElementById('passwordContainer').style.display = 'none';
+                    document.getElementById('loginContainer').style.display = 'block';
+                    passwordError.style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error("密码验证失败:", error);
+                    passwordError.textContent = "密码错误，请重试！";
+                    passwordError.style.display = 'block';
+                });
         }
 
         // 绑定验证按钮事件
@@ -881,7 +998,7 @@
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
-                        modal.style.display = 'none';
+                        closeModal(modal);
                     }
                 });
             });
@@ -908,6 +1025,16 @@
             document.getElementById('datetimeDisplay').dataset.end = tomorrowEnd.toISOString();
         };
 
+        // 打开模态框
+        function openModal(modal) {
+            modal.classList.add('show');
+        }
+
+        // 关闭模态框
+        function closeModal(modal) {
+            modal.classList.remove('show');
+        }
+
         // 打开自定义日期选择器
         function openCustomDatePicker() {
             const modal = document.getElementById('datePickerModal');
@@ -916,13 +1043,13 @@
             modalSelectedStart = null;
             modalSelectedEnd = null;
             renderModalCalendar();
-            modal.style.display = 'block';
+            openModal(modal);
         }
 
         // 关闭自定义日期选择器
         function closeCustomDatePicker() {
             const modal = document.getElementById('datePickerModal');
-            modal.style.display = 'none';
+            closeModal(modal);
             modalIsSelecting = false;
             modalSelectedStart = null;
             modalSelectedEnd = null;
@@ -967,13 +1094,13 @@
                     <button class="delete-btn" onclick="deleteSchedule('${schedule.id}', '${schedule.event}', '${startFormatted} 至 ${endFormatted}')"><i class="fas fa-trash-alt"></i> 删除</button>
                 </div>
             `;
-            modal.style.display = 'block';
+            openModal(modal);
         }
 
         // 关闭日程详情模态框
         function closeScheduleDetailModal() {
             const modal = document.getElementById('scheduleDetailModal');
-            modal.style.display = 'none';
+            closeModal(modal);
         }
 
         // 切换模态框月份
@@ -1050,33 +1177,86 @@
             // 高亮已选择的日期范围
             highlightRange();
 
-            // 添加拖拽选择事件
+            // 移除之前的事件监听器，避免重复绑定
+            calendarGrid.removeEventListener('mousedown', startSelection);
+            calendarGrid.removeEventListener('mouseover', updateSelection);
+            calendarGrid.removeEventListener('mouseup', endSelection);
+            calendarGrid.removeEventListener('touchstart', startTouchSelection);
+            calendarGrid.removeEventListener('touchmove', updateTouchSelection);
+            calendarGrid.removeEventListener('touchend', endTouchSelection);
+
+            // 添加鼠标事件（桌面端）
             calendarGrid.addEventListener('mousedown', startSelection);
             calendarGrid.addEventListener('mouseover', updateSelection);
             calendarGrid.addEventListener('mouseup', endSelection);
+
+            // 添加触摸事件（移动端）
+            calendarGrid.addEventListener('touchstart', startTouchSelection, { passive: false });
+            calendarGrid.addEventListener('touchmove', updateTouchSelection, { passive: false });
+            calendarGrid.addEventListener('touchend', endTouchSelection, { passive: false });
         }
 
-        // 开始选择
+        // 开始选择（鼠标）
         function startSelection(e) {
-            if (e.target.closest('.calendar-day') && !e.target.closest('.calendar-day').classList.contains('empty') && !e.target.closest('.calendar-day').classList.contains('header')) {
+            e.preventDefault();
+            const target = e.target.closest('.calendar-day');
+            if (target && !target.classList.contains('empty') && !target.classList.contains('header')) {
                 modalIsSelecting = true;
-                modalSelectedStart = e.target.closest('.calendar-day').dataset.date;
+                modalSelectedStart = target.dataset.date;
                 modalSelectedEnd = modalSelectedStart;
                 highlightRange();
             }
         }
 
-        // 更新选择范围
+        // 更新选择范围（鼠标）
         function updateSelection(e) {
-            if (modalIsSelecting && e.target.closest('.calendar-day') && !e.target.closest('.calendar-day').classList.contains('empty') && !e.target.closest('.calendar-day').classList.contains('header')) {
-                modalSelectedEnd = e.target.closest('.calendar-day').dataset.date;
+            e.preventDefault();
+            const target = e.target.closest('.calendar-day');
+            if (modalIsSelecting && target && !target.classList.contains('empty') && !target.classList.contains('header')) {
+                modalSelectedEnd = target.dataset.date;
                 highlightRange();
             }
         }
 
-        // 结束选择
+        // 结束选择（鼠标）
         function endSelection() {
             modalIsSelecting = false;
+        }
+
+        // 开始选择（触摸）
+        function startTouchSelection(e) {
+            e.preventDefault(); // 阻止默认滚动行为
+            const touch = e.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dayTarget = target.closest('.calendar-day');
+            if (dayTarget && !dayTarget.classList.contains('empty') && !dayTarget.classList.contains('header')) {
+                modalIsSelecting = true;
+                modalSelectedStart = dayTarget.dataset.date;
+                modalSelectedEnd = modalSelectedStart;
+                highlightRange();
+                console.log("Touch Start:", modalSelectedStart); // 调试日志
+            }
+        }
+
+        // 更新选择范围（触摸）
+        function updateTouchSelection(e) {
+            e.preventDefault(); // 阻止默认滚动行为
+            if (!modalIsSelecting) return;
+            const touch = e.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dayTarget = target.closest('.calendar-day');
+            if (dayTarget && !dayTarget.classList.contains('empty') && !dayTarget.classList.contains('header')) {
+                modalSelectedEnd = dayTarget.dataset.date;
+                highlightRange();
+                console.log("Touch Move:", modalSelectedEnd); // 调试日志
+            }
+        }
+
+        // 结束选择（触摸）
+        function endTouchSelection(e) {
+            e.preventDefault();
+            modalIsSelecting = false;
+            console.log("Touch End:", { start: modalSelectedStart, end: modalSelectedEnd }); // 调试日志
         }
 
         // 高亮选择范围
@@ -1139,29 +1319,26 @@
                 return;
             }
 
-            auth.signInAnonymously().then(() => {
-                currentUser = username;
-                console.log("当前用户:", currentUser);
-                document.getElementById('addedBy').value = currentUser;
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('scheduleForm').style.display = 'block';
-                document.getElementById('scheduleList').style.display = 'block';
-                document.getElementById('logList').style.display = 'block';
-                loadSchedules();
-                loadLogs();
-                // 登录后立即清理系统日程
-                cleanSystemSchedules();
-            }).catch((error) => {
-                console.error("登录失败:", error);
-                alert("登录失败: " + error.message);
-            });
+            currentUser = username;
+            console.log("当前用户:", currentUser);
+            document.getElementById('addedBy').value = currentUser;
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('scheduleForm').style.display = 'block';
+            document.getElementById('scheduleList').style.display = 'block';
+            document.getElementById('logList').style.display = 'block';
+            loadSchedules();
+            loadLogs();
+            // 登录后立即清理系统日程
+            cleanSystemSchedules();
         }
 
         // 登出
         function logout() {
             auth.signOut().then(() => {
                 currentUser = null;
-                document.getElementById('loginContainer').style.display = 'block';
+                localStorage.removeItem('accessVerified');
+                document.getElementById('passwordContainer').style.display = 'block';
+                document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('scheduleForm').style.display = 'none';
                 document.getElementById('scheduleList').style.display = 'none';
                 document.getElementById('logList').style.display = 'none';
