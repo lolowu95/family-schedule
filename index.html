@@ -1406,12 +1406,15 @@
             const startDay = firstDayOfMonth.getDay();
             const today = new Date();
 
+            // 创建日历格子
             for (let i = 0; i < startDay; i++) {
                 const emptyDay = document.createElement('div');
                 emptyDay.className = 'calendar-day empty';
                 calendarGrid.appendChild(emptyDay);
             }
 
+            // 为每一天创建格子
+            const dayElements = [];
             for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
                 const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
                 const dayDiv = document.createElement('div');
@@ -1427,36 +1430,52 @@
                 dayNumber.textContent = day;
                 dayDiv.appendChild(dayNumber);
 
-                const daySchedules = filteredSchedules.filter(schedule => {
-                    const scheduleDate = new Date(schedule.startDatetime);
-                    return scheduleDate.getDate() === day &&
-                           scheduleDate.getMonth() === currentMonth.getMonth() &&
-                           scheduleDate.getFullYear() === currentMonth.getFullYear();
-                });
-
-                daySchedules.forEach(schedule => {
-                    const eventDiv = document.createElement('div');
-                    eventDiv.className = `calendar-event ${schedule.completed ? 'completed' : ''}`;
-                    const avatar = {
-                        '吴乐乐': { color: '#e74c3c', initial: '吴' },
-                        '冯妈妈': { color: '#3498db', initial: '冯' },
-                        '张宝宝': { color: '#2ecc71', initial: '张' },
-                        '懒宝': { color: '#f1c40f', initial: '懒' }
-                    }[schedule.user] || { color: '#95a5a6', initial: schedule.user[0] };
-
-                    eventDiv.innerHTML = `
-                        <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
-                        <div class="content">
-                            <div class="event-text">${schedule.event}</div>
-                            <div class="added-by">添加者: ${schedule.user}</div>
-                        </div>
-                    `;
-                    eventDiv.addEventListener('click', () => openScheduleDetailModal(schedule));
-                    dayDiv.appendChild(eventDiv);
-                });
-
                 calendarGrid.appendChild(dayDiv);
+                dayElements[day] = dayDiv; // 保存每个日期的 DOM 元素
             }
+
+            // 遍历所有日程，检查每个日程的时间范围
+            filteredSchedules.forEach(schedule => {
+                const startDate = new Date(schedule.startDatetime);
+                const endDate = new Date(schedule.endDatetime);
+
+                // 确保日程在当前月份内
+                const start = new Date(Math.max(startDate, firstDayOfMonth));
+                const end = new Date(Math.min(endDate, lastDayOfMonth));
+
+                // 如果日程的结束时间早于当前月份的开始时间，或者开始时间晚于当前月份的结束时间，则跳过
+                if (end < firstDayOfMonth || start > lastDayOfMonth) {
+                    return;
+                }
+
+                // 遍历日程覆盖的每一天
+                for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                    const day = d.getDate();
+                    if (d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear()) {
+                        const dayDiv = dayElements[day];
+                        if (dayDiv) {
+                            const eventDiv = document.createElement('div');
+                            eventDiv.className = `calendar-event ${schedule.completed ? 'completed' : ''}`;
+                            const avatar = {
+                                '吴乐乐': { color: '#e74c3c', initial: '吴' },
+                                '冯妈妈': { color: '#3498db', initial: '冯' },
+                                '张宝宝': { color: '#2ecc71', initial: '张' },
+                                '懒宝': { color: '#f1c40f', initial: '懒' }
+                            }[schedule.user] || { color: '#95a5a6', initial: schedule.user[0] };
+
+                            eventDiv.innerHTML = `
+                                <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
+                                <div class="content">
+                                    <div class="event-text">${schedule.event}</div>
+                                    <div class="added-by">添加者: ${schedule.user}</div>
+                                </div>
+                            `;
+                            eventDiv.addEventListener('click', () => openScheduleDetailModal(schedule));
+                            dayDiv.appendChild(eventDiv);
+                        }
+                    }
+                }
+            });
         }
 
         // 打开自定义日期选择器
