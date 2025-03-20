@@ -1,3 +1,4 @@
+// 使用 Firebase 9.x compat 模式
 const firebaseConfig = {
     apiKey: "AIzaSyCXv-VzsLyRZ6E4m7AnFUXv3_tVoedegSE",
     authDomain: "familidayli.firebaseapp.com",
@@ -12,20 +13,25 @@ const firebaseConfig = {
 let db, schedulesRef, logsRef, auth;
 
 try {
-    firebase.initializeApp(firebaseConfig);
-    auth = firebase.auth();
-    db = firebase.database();
+    if (!window.firebase) {
+        throw new Error("Firebase SDK 未加载，请检查网络或 CDN 地址");
+    }
+    const app = firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth(app);
+    db = firebase.database(app);
     schedulesRef = db.ref('schedules');
     logsRef = db.ref('logs');
     console.log("Firebase 初始化成功");
 
     // 匿名登录
-    auth.signInAnonymously().then(() => {
-        console.log("匿名登录成功");
-    }).catch((error) => {
-        console.error("匿名登录失败:", error);
-        alert("匿名登录失败，可能需要检查 Firebase 规则: " + error.message);
-    });
+    auth.signInAnonymously()
+        .then(() => {
+            console.log("匿名登录成功");
+        })
+        .catch((error) => {
+            console.error("匿名登录失败:", error);
+            alert("匿名登录失败，可能需要检查 Firebase 规则: " + error.message);
+        });
 } catch (error) {
     console.error("Firebase 初始化失败:", error);
     alert("Firebase 初始化失败: " + error.message);
