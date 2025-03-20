@@ -1,10 +1,3 @@
-// 确保 firebase 已通过 <script> 标签引入到全局
-if (!window.firebase) {
-    console.error("Firebase SDK not loaded. Please ensure Firebase scripts are included in index.html.");
-    throw new Error("Firebase SDK not loaded");
-}
-
-// 用户提供的 Firebase 配置
 const firebaseConfig = {
     apiKey: "AIzaSyCXv-VzsLyRZ6E4m7AnFUXv3_tVoedegSE",
     authDomain: "familidayli.firebaseapp.com",
@@ -16,30 +9,26 @@ const firebaseConfig = {
 };
 
 // 初始化 Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database(app);
-const auth = firebase.auth(app);
+let db, schedulesRef, logsRef, auth;
 
-// 匿名登录
-auth.signInAnonymously()
-    .then(() => {
-        console.log("Signed in anonymously to Firebase (9.x compat mode)");
-    })
-    .catch((error) => {
-        console.error("Anonymous auth failed:", error.code, error.message);
-        alert("无法连接到数据库，请检查网络连接后重试！");
+try {
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.database();
+    schedulesRef = db.ref('schedules');
+    logsRef = db.ref('logs');
+    console.log("Firebase 初始化成功");
+
+    // 匿名登录
+    auth.signInAnonymously().then(() => {
+        console.log("匿名登录成功");
+    }).catch((error) => {
+        console.error("匿名登录失败:", error);
+        alert("匿名登录失败，可能需要检查 Firebase 规则: " + error.message);
     });
+} catch (error) {
+    console.error("Firebase 初始化失败:", error);
+    alert("Firebase 初始化失败: " + error.message);
+}
 
-// 导出 Firebase Realtime Database 方法
-const ref = (path) => database.ref(path);
-const set = (ref, value) => ref.set(value);
-const get = (ref) => ref.once('value').then(snapshot => snapshot);
-const remove = (ref) => ref.remove();
-const onValue = (ref, callback) => {
-    ref.on('value', (snapshot) => {
-        callback(snapshot);
-    });
-};
-
-// 导出为 ES 模块
-export { database, ref, set, get, remove, onValue };
+export { db, schedulesRef, logsRef, auth };
