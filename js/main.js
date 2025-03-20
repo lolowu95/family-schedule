@@ -5,6 +5,12 @@ import { openDatePicker, closeDatePicker, changeModalMonth, confirmRangeSelectio
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM fully loaded");
 
+    // 隐藏加载提示
+    const loading = document.getElementById('loading');
+    if (loading) {
+        loading.style.display = 'none';
+    }
+
     // 初始化日期选择器默认值
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -57,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
             login();
             loadSchedules();
             loadLogs();
+            renderCalendar();
         });
     } else {
         console.error("loginButton element not found");
