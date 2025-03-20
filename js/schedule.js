@@ -7,7 +7,6 @@ function loadSchedules() {
         const data = snapshot.val();
         if (data) {
             console.log("Schedules loaded:", data);
-            // 渲染日程逻辑
             const timelineView = document.getElementById('timelineView');
             timelineView.innerHTML = ''; // 清空现有内容
             Object.entries(data).forEach(([id, schedule]) => {
@@ -87,7 +86,6 @@ function deleteSchedule(id) {
     });
 }
 
-// 其他函数（简化示例）
 function filterSchedules() { /* 实现过滤逻辑 */ }
 function switchView(view) {
     const calendarView = document.getElementById('calendarView');
