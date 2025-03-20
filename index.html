@@ -368,7 +368,7 @@
             padding: 15px; 
             border-radius: 10px; 
             width: 90%; 
-            max-width: 400px; 
+            max-width: 600px; 
             max-height: 80vh; 
             overflow-y: auto; 
             position: absolute; 
@@ -397,6 +397,54 @@
         .modal-content button.cancel:hover { 
             background: #c0392b; 
         }
+        /* 自定义日期选择器样式 */
+        .calendar-month { 
+            margin-bottom: 20px; 
+        }
+        .calendar-month h4 { 
+            color: #1e3a8a; 
+            margin-bottom: 10px; 
+            text-align: center; 
+        }
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 5px; 
+        }
+        .calendar-day { 
+            background: #f9fbfc; 
+            padding: 5px; 
+            border-radius: 5px; 
+            text-align: center; 
+            border: 1px solid #dfe6e9; 
+            font-size: 0.9em; 
+            cursor: pointer; 
+            transition: background 0.3s ease; 
+        }
+        .calendar-day.header { 
+            background: #1e90ff; 
+            color: white; 
+            font-weight: bold; 
+            height: 30px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .calendar-day.empty { 
+            background: #ecf0f1; 
+            cursor: default; 
+        }
+        .calendar-day.today { 
+            border: 2px solid #1e90ff; 
+            background: #e6f0fa; 
+        }
+        .calendar-day.selected { 
+            background-color: #a0c4ff; 
+        }
+        .calendar-day:hover:not(.empty):not(.header) { 
+            background: #e6f0fa; 
+        }
+        /* 日程详情模态框样式 */
         .schedule-detail-modal .modal-content { 
             display: flex; 
             flex-direction: column; 
@@ -423,19 +471,19 @@
             flex-grow: 1; 
         }
         .schedule-detail-modal .time-range { 
-            color: #7f8c8d; /* 与时间线视图一致 */
-            font-size: 0.95em; /* 字体稍小 */
+            color: #7f8c8d; 
+            font-size: 0.95em; 
             margin-bottom: 5px; 
         }
         .schedule-detail-modal .event-text { 
-            color: #2c3e50; /* 与时间线视图一致 */
-            font-size: 1.2em; /* 字体更大 */
-            font-weight: bold; /* 加粗 */
+            color: #2c3e50; 
+            font-size: 1.2em; 
+            font-weight: bold; 
             margin-bottom: 5px; 
         }
         .schedule-detail-modal .added-by { 
             color: #e67e22; 
-            font-size: 0.85em; /* 字体稍小 */
+            font-size: 0.85em; 
         }
         .schedule-detail-modal .actions { 
             display: flex; 
@@ -471,6 +519,33 @@
         }
         .log-item:last-child { 
             border-bottom: none; 
+        }
+        /* 操作日志折叠样式 */
+        .log-list .logs-container { 
+            max-height: none; 
+            transition: max-height 0.3s ease; 
+        }
+        .log-list .logs-container.collapsed .log-item:nth-child(n+6) { 
+            display: none; 
+        }
+        .log-list .toggle-btn { 
+            background: #1e90ff; 
+            color: white; 
+            padding: 8px 15px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 0.9em; 
+            font-weight: 600; 
+            margin-top: 10px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 5px; 
+            transition: background 0.3s ease; 
+            width: auto; 
+        }
+        .log-list .toggle-btn:hover { 
+            background: #187bcd; 
         }
         /* 移动端优化 */
         @media (max-width: 600px) { 
@@ -510,13 +585,13 @@
                 font-size: 1em; 
             } 
             .timeline-item .date-time { 
-                font-size: 0.85em; /* 移动端稍小 */
+                font-size: 0.85em; 
             } 
             .timeline-item .event { 
-                font-size: 1.1em; /* 移动端稍小 */
+                font-size: 1.1em; 
             } 
             .timeline-item .added-by { 
-                font-size: 0.75em; /* 移动端稍小 */
+                font-size: 0.75em; 
             } 
             .timeline-item .delete-btn { 
                 padding: 5px 10px; 
@@ -566,7 +641,7 @@
             } 
             .modal-content { 
                 width: 95%; 
-                max-width: 300px; 
+                max-width: 400px; 
                 max-height: 70vh; 
                 padding: 10px; 
             } 
@@ -577,6 +652,13 @@
                 font-size: 0.8em; 
                 padding: 6px; 
             } 
+            .calendar-day { 
+                padding: 2px; 
+                font-size: 0.8em; 
+            } 
+            .calendar-day.header { 
+                font-size: 0.8em; 
+            } 
             .schedule-detail-modal .modal-content { 
                 max-width: 280px; 
             } 
@@ -586,16 +668,20 @@
                 font-size: 1em; 
             } 
             .schedule-detail-modal .time-range { 
-                font-size: 0.85em; /* 移动端稍小 */
+                font-size: 0.85em; 
             } 
             .schedule-detail-modal .event-text { 
-                font-size: 1.1em; /* 移动端稍小 */
+                font-size: 1.1em; 
             } 
             .schedule-detail-modal .added-by { 
-                font-size: 0.75em; /* 移动端稍小 */
+                font-size: 0.75em; 
             } 
             .schedule-detail-modal .delete-btn { 
                 padding: 5px 10px; 
+                font-size: 0.8em; 
+            } 
+            .log-list .toggle-btn { 
+                padding: 6px 12px; 
                 font-size: 0.8em; 
             } 
         }
@@ -642,6 +728,10 @@
             <label><i class="fas fa-sticky-note"></i> 事件</label>
             <input type="text" id="event" placeholder="请输入事件" required>
         </div>
+        <div class="form-group">
+            <label><i class="fas fa-user"></i> 添加者</label>
+            <input type="text" id="addedBy" value="" readonly>
+        </div>
         <button onclick="addSchedule()"><i class="fas fa-plus"></i> 添加日程</button>
         <button onclick="logout()" style="background: #e74c3c; margin-top: 10px;"><i class="fas fa-sign-out-alt"></i> 登出</button>
     </div>
@@ -652,10 +742,9 @@
             <h3>选择时间段</h3>
             <div class="calendar-header">
                 <button onclick="changeModalMonth(-1)">上一月</button>
-                <h3 id="modalCalendarMonth"></h3>
                 <button onclick="changeModalMonth(1)">下一月</button>
             </div>
-            <div class="calendar-grid" id="modalCalendarGrid"></div>
+            <div id="modalCalendarGrid"></div>
             <button onclick="confirmRangeSelection()">确认</button>
             <button class="cancel" onclick="closeCustomDatePicker()">取消</button>
         </div>
@@ -701,7 +790,10 @@
     <!-- 操作日志 -->
     <div class="log-list" id="logList" style="display: none;">
         <h2><i class="fas fa-history"></i> 操作日志</h2>
-        <div id="logs"></div>
+        <div id="logs" class="logs-container collapsed"></div>
+        <button id="toggleLogsBtn" class="toggle-btn" style="display: none;" onclick="toggleLogs()">
+            <i class="fas fa-chevron-down"></i> 查看更多
+        </button>
     </div>
 
     <!-- Firebase SDK -->
@@ -716,10 +808,11 @@
         let db, schedulesRef, logsRef, auth;
         let currentView = 'timeline'; // 默认视图
         let currentMonth = new Date(); // 当前显示的月份
-        let modalCurrentMonth = new Date(); // 模态框的当前月份
+        let modalStartMonth = new Date(); // 模态框的起始月份
         let modalIsSelecting = false;
         let modalSelectedStart = null;
         let modalSelectedEnd = null;
+        let isLogsExpanded = false; // 跟踪日志是否展开
 
         const firebaseConfig = {
             apiKey: "AIzaSyCXv-VzsLyRZ6E4m7AnFUXv3_tVoedegSE",
@@ -818,7 +911,7 @@
         // 打开自定义日期选择器
         function openCustomDatePicker() {
             const modal = document.getElementById('datePickerModal');
-            modalCurrentMonth = new Date();
+            modalStartMonth = new Date();
             modalIsSelecting = false;
             modalSelectedStart = null;
             modalSelectedEnd = null;
@@ -885,57 +978,77 @@
 
         // 切换模态框月份
         function changeModalMonth(delta) {
-            modalCurrentMonth.setMonth(modalCurrentMonth.getMonth() + delta);
+            modalStartMonth.setMonth(modalStartMonth.getMonth() + delta);
             renderModalCalendar();
         }
 
-        // 渲染模态框日历
+        // 渲染模态框日历（显示多个月份）
         function renderModalCalendar() {
             const calendarGrid = document.getElementById('modalCalendarGrid');
-            const calendarMonth = document.getElementById('modalCalendarMonth');
             calendarGrid.innerHTML = '';
 
-            // 设置月份标题
-            calendarMonth.textContent = `${modalCurrentMonth.getFullYear()}年 ${modalCurrentMonth.getMonth() + 1}月`;
-
-            // 添加星期头部
-            const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
-            daysOfWeek.forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'calendar-day header';
-                dayHeader.textContent = day;
-                calendarGrid.appendChild(dayHeader);
-            });
-
-            // 获取当前月份的第一天和最后一天
-            const firstDayOfMonth = new Date(modalCurrentMonth.getFullYear(), modalCurrentMonth.getMonth(), 1);
-            const lastDayOfMonth = new Date(modalCurrentMonth.getFullYear(), modalCurrentMonth.getMonth() + 1, 0);
+            // 显示两个月份：当前月和下个月
+            const monthsToShow = 2;
             const today = new Date();
 
-            // 计算第一天是星期几
-            const startDay = firstDayOfMonth.getDay();
+            for (let i = 0; i < monthsToShow; i++) {
+                const currentMonth = new Date(modalStartMonth.getFullYear(), modalStartMonth.getMonth() + i, 1);
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'calendar-month';
 
-            // 添加空白格子
-            for (let i = 0; i < startDay; i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.className = 'calendar-day empty';
-                calendarGrid.appendChild(emptyDay);
-            }
+                // 月份标题
+                const monthTitle = document.createElement('h4');
+                monthTitle.textContent = `${currentMonth.getFullYear()}年 ${currentMonth.getMonth() + 1}月`;
+                monthDiv.appendChild(monthTitle);
 
-            // 添加日期格子
-            for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-                const currentDate = new Date(modalCurrentMonth.getFullYear(), modalCurrentMonth.getMonth(), day);
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'calendar-day';
-                dayDiv.dataset.date = `${modalCurrentMonth.getFullYear()}-${String(modalCurrentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                if (currentDate.getDate() === today.getDate() &&
-                    currentDate.getMonth() === today.getMonth() &&
-                    currentDate.getFullYear() === today.getFullYear()) {
-                    dayDiv.classList.add('today');
+                // 创建日历网格
+                const monthGrid = document.createElement('div');
+                monthGrid.className = 'calendar-grid';
+                monthDiv.appendChild(monthGrid);
+
+                // 添加星期头部
+                const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+                daysOfWeek.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'calendar-day header';
+                    dayHeader.textContent = day;
+                    monthGrid.appendChild(dayHeader);
+                });
+
+                // 获取当前月份的第一天和最后一天
+                const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+                const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+
+                // 计算第一天是星期几
+                const startDay = firstDayOfMonth.getDay();
+
+                // 添加空白格子
+                for (let j = 0; j < startDay; j++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day empty';
+                    monthGrid.appendChild(emptyDay);
                 }
-                dayDiv.innerHTML = `<strong>${day}</strong>`;
-                calendarGrid.appendChild(dayDiv);
+
+                // 添加日期格子
+                for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+                    const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'calendar-day';
+                    dayDiv.dataset.date = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    if (currentDate.getDate() === today.getDate() &&
+                        currentDate.getMonth() === today.getMonth() &&
+                        currentDate.getFullYear() === today.getFullYear()) {
+                        dayDiv.classList.add('today');
+                    }
+                    dayDiv.textContent = day;
+                    monthGrid.appendChild(dayDiv);
+                }
+
+                calendarGrid.appendChild(monthDiv);
             }
+
+            // 高亮已选择的日期范围
+            highlightRange();
 
             // 添加拖拽选择事件
             calendarGrid.addEventListener('mousedown', startSelection);
@@ -970,21 +1083,22 @@
         function highlightRange() {
             const allDays = document.querySelectorAll('#modalCalendarGrid .calendar-day');
             allDays.forEach(day => day.classList.remove('selected'));
-            let startIdx = -1;
-            let endIdx = -1;
-            allDays.forEach((day, index) => {
-                if (day.dataset.date === modalSelectedStart) startIdx = index;
-                if (day.dataset.date === modalSelectedEnd) endIdx = index;
-            });
-            if (startIdx > -1 && endIdx > -1) {
-                const min = Math.min(startIdx, endIdx);
-                const max = Math.max(startIdx, endIdx);
-                for (let i = min; i <= max; i++) {
-                    if (!allDays[i].classList.contains('empty') && !allDays[i].classList.contains('header')) {
-                        allDays[i].classList.add('selected');
+
+            if (!modalSelectedStart || !modalSelectedEnd) return;
+
+            const startDate = new Date(modalSelectedStart);
+            const endDate = new Date(modalSelectedEnd);
+            const rangeStart = startDate < endDate ? startDate : endDate;
+            const rangeEnd = startDate < endDate ? endDate : startDate;
+
+            allDays.forEach(day => {
+                if (day.dataset.date) {
+                    const currentDate = new Date(day.dataset.date);
+                    if (currentDate >= rangeStart && currentDate <= rangeEnd) {
+                        day.classList.add('selected');
                     }
                 }
-            }
+            });
         }
 
         // 确认选择范围
@@ -1028,6 +1142,7 @@
             auth.signInAnonymously().then(() => {
                 currentUser = username;
                 console.log("当前用户:", currentUser);
+                document.getElementById('addedBy').value = currentUser;
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('scheduleForm').style.display = 'block';
                 document.getElementById('scheduleList').style.display = 'block';
@@ -1103,14 +1218,47 @@
         // 渲染操作日志
         function renderLogs() {
             const logsContainer = document.getElementById('logs');
+            const toggleBtn = document.getElementById('toggleLogsBtn');
             logsContainer.innerHTML = '';
             logs.sort((a, b) => b.timestamp - a.timestamp);
+
+            // 渲染所有日志条目
             logs.forEach(log => {
                 const logItem = document.createElement('div');
                 logItem.className = 'log-item';
                 logItem.innerHTML = `${log.timestamp.toLocaleString('zh-CN')} - ${log.user} ${log.action}: ${log.details}`;
                 logsContainer.appendChild(logItem);
             });
+
+            // 根据日志数量决定是否显示“查看更多”按钮
+            if (logs.length > 5) {
+                toggleBtn.style.display = 'inline-flex';
+                if (!isLogsExpanded) {
+                    logsContainer.classList.add('collapsed');
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 查看更多';
+                } else {
+                    logsContainer.classList.remove('collapsed');
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+                }
+            } else {
+                toggleBtn.style.display = 'none';
+                logsContainer.classList.remove('collapsed');
+            }
+        }
+
+        // 切换日志展开/折叠状态
+        function toggleLogs() {
+            const logsContainer = document.getElementById('logs');
+            const toggleBtn = document.getElementById('toggleLogsBtn');
+            isLogsExpanded = !isLogsExpanded;
+
+            if (isLogsExpanded) {
+                logsContainer.classList.remove('collapsed');
+                toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+            } else {
+                logsContainer.classList.add('collapsed');
+                toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 查看更多';
+            }
         }
 
         // 加载日程
@@ -1359,7 +1507,7 @@
             const event = document.getElementById('event').value.trim();
 
             if (!startDatetime || !endDatetime || !event) {
-                alert('请填写所有必填写！');
+                alert('请填写所有必填项！');
                 return;
             }
 
