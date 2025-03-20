@@ -1,52 +1,4 @@
-import { database, ref, set, get, remove, onValue } from './firebase.js';
-
-function loadSchedules() {
-    console.log("loadSchedules called");
-    const schedulesRef = ref('schedules');
-    onValue(schedulesRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            console.log("Schedules loaded:", data);
-            const timelineView = document.getElementById('timelineView');
-            timelineView.innerHTML = ''; // 清空现有内容
-            Object.entries(data).forEach(([id, schedule]) => {
-                const item = document.createElement('div');
-                item.className = 'timeline-item';
-                item.innerHTML = `
-                    <span>${schedule.start} 至 ${schedule.end} - ${schedule.event} (${schedule.user})</span>
-                    <button onclick="deleteSchedule('${id}')">删除</button>
-                `;
-                timelineView.appendChild(item);
-            });
-        } else {
-            console.log("No schedules found");
-        }
-    }, (error) => {
-        console.error("Failed to load schedules:", error);
-    });
-}
-
-function loadLogs() {
-    console.log("loadLogs called");
-    const logsRef = ref('logs');
-    onValue(logsRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            console.log("Logs loaded:", data);
-            const logsDiv = document.getElementById('logs');
-            logsDiv.innerHTML = '';
-            Object.entries(data).forEach(([id, log]) => {
-                const logItem = document.createElement('div');
-                logItem.textContent = `${log.timestamp}: ${log.message}`;
-                logsDiv.appendChild(logItem);
-            });
-        } else {
-            console.log("No logs found");
-        }
-    }, (error) => {
-        console.error("Failed to load logs:", error);
-    });
-}
+import { ref, set, remove, onValue } from './firebase.js';
 
 function addSchedule() {
     const datetimeDisplay = document.getElementById('datetimeDisplay');
@@ -72,8 +24,64 @@ function addSchedule() {
     }).then(() => {
         console.log("Schedule added");
         eventInput.value = '';
+        // 记录日志
+        const logRef = ref(`logs/${Date.now()}`);
+        set(logRef, {
+            timestamp: new Date().toLocaleString('zh-CN'),
+            message: `${user} 添加了日程：${event}（${start} 至 ${end}）`
+        });
     }).catch((error) => {
         console.error("Failed to add schedule:", error);
+    });
+}
+
+function loadSchedules() {
+    console.log("loadSchedules called");
+    const schedulesRef = ref('schedules');
+    onValue(schedulesRef, (snapshot) => {
+        const data = snapshot.val();
+        const timelineView = document.getElementById('timelineView');
+        timelineView.innerHTML = ''; // 清空现有内容
+        if (data) {
+            console.log("Schedules loaded:", data);
+            Object.entries(data).forEach(([id, schedule]) => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.innerHTML = `
+                    <span>${schedule.start} 至 ${schedule.end} - ${schedule.event} (${schedule.user})</span>
+                    <button onclick="deleteSchedule('${id}')">删除</button>
+                `;
+                timelineView.appendChild(item);
+            });
+        } else {
+            console.log("No schedules found");
+            timelineView.innerHTML = '<p>暂无日程</p>';
+        }
+    }, (error) => {
+        console.error("Failed to load schedules:", error);
+    });
+}
+
+function loadLogs() {
+    console.log("loadLogs called");
+    const logsRef = ref('logs');
+    onValue(logsRef, (snapshot) => {
+        const data = snapshot.val();
+        const logsDiv = document.getElementById('logs');
+        logsDiv.innerHTML = '';
+        if (data) {
+            console.log("Logs loaded:", data);
+            Object.entries(data).forEach(([id, log]) => {
+                const logItem = document.createElement('div');
+                logItem.textContent = `${log.timestamp}: ${log.message}`;
+                logsDiv.appendChild(logItem);
+            });
+        } else {
+            console.log("No logs found");
+            logsDiv.innerHTML = '<p>暂无日志</p>';
+        }
+    }, (error) => {
+        console.error("Failed to load logs:", error);
     });
 }
 
@@ -81,12 +89,47 @@ function deleteSchedule(id) {
     const scheduleRef = ref(`schedules/${id}`);
     remove(scheduleRef).then(() => {
         console.log("Schedule deleted");
+        const user = localStorage.getItem('currentUser');
+        const logRef = ref(`logs/${Date.now()}`);
+        set(logRef, {
+            timestamp: new Date().toLocaleString('zh-CN'),
+            message: `${user} 删除了日程（ID: ${id}）`
+        });
     }).catch((error) => {
         console.error("Failed to delete schedule:", error);
     });
 }
 
-function filterSchedules() { /* 实现过滤逻辑 */ }
+function filterSchedules() {
+    const filterUser = document.getElementById('filterUser').value;
+    const timelineView = document.getElementById('timelineView');
+    const schedulesRef = ref('schedules');
+    onValue(schedulesRef, (snapshot) => {
+        const data = snapshot.val();
+        timelineView.innerHTML = '';
+        if (data) {
+            const filtered = Object.entries(data).filter(([id, schedule]) => {
+                return !filterUser || schedule.user === filterUser;
+            });
+            if (filtered.length > 0) {
+                filtered.forEach(([id, schedule]) => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+                    item.innerHTML = `
+                        <span>${schedule.start} 至 ${schedule.end} - ${schedule.event} (${schedule.user})</span>
+                        <button onclick="deleteSchedule('${id}')">删除</button>
+                    `;
+                    timelineView.appendChild(item);
+                });
+            } else {
+                timelineView.innerHTML = '<p>暂无日程</p>';
+            }
+        } else {
+            timelineView.innerHTML = '<p>暂无日程</p>';
+        }
+    });
+}
+
 function switchView(view) {
     const calendarView = document.getElementById('calendarView');
     const timelineView = document.getElementById('timelineView');
@@ -105,6 +148,10 @@ function switchView(view) {
         timelineViewBtn.classList.add('active');
     }
 }
-function toggleComplete() { /* 实现切换完成状态逻辑 */ }
+
+function toggleComplete() {
+    // 占位函数，未实现
+    console.log("toggleComplete called");
+}
 
 export { addSchedule, loadSchedules, loadLogs, filterSchedules, switchView, toggleComplete, deleteSchedule };
