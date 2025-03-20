@@ -1,7 +1,10 @@
-import firebase from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js';
-import 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js';
-import 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js';
+// 确保 firebase 已通过 <script> 标签引入到全局
+if (!window.firebase) {
+    console.error("Firebase SDK not loaded. Please ensure Firebase scripts are included in index.html.");
+    throw new Error("Firebase SDK not loaded");
+}
 
+// 用户提供的 Firebase 配置
 const firebaseConfig = {
     apiKey: "AIzaSyCXv-VzsLyRZ6E4m7AnFUXv3_tVoedegSE",
     authDomain: "familidayli.firebaseapp.com",
@@ -12,10 +15,12 @@ const firebaseConfig = {
     databaseURL: "https://familidayli-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
+// 初始化 Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const database = firebase.database(app);
 const auth = firebase.auth(app);
 
+// 匿名登录
 auth.signInAnonymously()
     .then(() => {
         console.log("Signed in anonymously to Firebase");
@@ -24,6 +29,7 @@ auth.signInAnonymously()
         console.error("Anonymous auth failed:", error.code, error.message);
     });
 
+// 导出 Firebase Realtime Database 方法
 const ref = (path) => database.ref(path);
 const set = (ref, value) => ref.set(value);
 const get = (ref) => ref.once('value').then(snapshot => snapshot);
@@ -34,4 +40,5 @@ const onValue = (ref, callback) => {
     });
 };
 
+// 导出为 ES 模块
 export { database, ref, set, get, remove, onValue };
