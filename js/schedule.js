@@ -42,7 +42,11 @@ function loadSchedules() {
         filterSchedules();
     }, (error) => {
         console.error('加载数据失败:', error);
-        alert('加载日程失败，请检查网络或 Firebase 配置！');
+        if (error.code === 'PERMISSION_DENIED') {
+            alert('加载日程失败，请检查 Firebase 规则，当前用户无权限访问 /schedules 节点。');
+        } else {
+            alert('加载日程失败，请检查网络或 Firebase 配置: ' + error.message);
+        }
     });
 }
 
@@ -77,6 +81,8 @@ function loadHolidays() {
                 event: holiday.event,
                 user: '系统',
                 completed: false
+            }).catch(error => {
+                console.error("添加节日失败:", error);
             });
         }
     });
@@ -108,7 +114,7 @@ function addSchedule() {
     const event = document.getElementById('event').value.trim();
 
     if (!startDatetime || !endDatetime || !event) {
-        alert('请填写所有必填写！');
+        alert('请填写所有必填字段！');
         return;
     }
 
@@ -133,6 +139,13 @@ function addSchedule() {
         document.getElementById('datetimeDisplay').dataset.start = '';
         document.getElementById('datetimeDisplay').dataset.end = '';
         document.getElementById('event').value = '';
+    }).catch(error => {
+        console.error("添加日程失败:", error);
+        if (error.code === 'PERMISSION_DENIED') {
+            alert('添加日程失败，请检查 Firebase 规则，当前用户无权限写入 /schedules 节点。');
+        } else {
+            alert('添加日程失败，请检查网络或 Firebase 配置: ' + error.message);
+        }
     });
 }
 
@@ -145,6 +158,10 @@ function toggleComplete(id, checkbox) {
     schedulesRef.child(id).update({ completed: checkbox.checked }).then(() => {
         const schedule = schedules.find(s => s.id === id);
         logAction('标记日程', `事件: ${schedule.event}, 状态: ${checkbox.checked ? '已完成' : '未完成'}`);
+    }).catch(error => {
+        console.error("标记日程失败:", error);
+        alert('标记日程失败: ' + error.message);
+        checkbox.checked = !checkbox.checked; // 回滚状态
     });
 }
 
@@ -156,6 +173,9 @@ function deleteSchedule(id, event, datetime) {
     }
     schedulesRef.child(id).remove().then(() => {
         logAction('删除日程', `事件: ${event}, 时间: ${datetime}`);
+    }).catch(error => {
+        console.error("删除日程失败:", error);
+        alert('删除日程失败: ' + error.message);
     });
 }
 
@@ -202,8 +222,12 @@ function loadLogs() {
 
 function renderLogs() {
     const logsContainer = document.getElementById('logs');
+    if (!logsContainer) {
+        console.error("未找到 logs 元素");
+        return;
+    }
     logsContainer.innerHTML = '';
-    logs.sort((a, b) => b.timestamp - a.timestamp);
+    logs.sort((a, b) => b.timestamp - a.timestamp); // 确保按时间倒序
     logs.forEach(log => {
         const logItem = document.createElement('div');
         logItem.className = 'log-item';
