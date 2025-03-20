@@ -167,6 +167,7 @@
             transition: transform 0.3s ease, background 0.3s ease; 
             display: flex; 
             align-items: flex-start; 
+            gap: 10px; 
         }
         .timeline-item:hover { 
             transform: translateX(5px); 
@@ -195,7 +196,6 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            margin-right: 15px; 
             flex-shrink: 0; 
             font-size: 1.2em; 
         }
@@ -203,38 +203,40 @@
             flex-grow: 1; 
         }
         .timeline-item .date-time { 
-            color: #2c3e50; 
-            font-weight: bold; 
-            font-size: 1.2em; 
-            margin-bottom: 8px; 
+            color: #7f8c8d; /* 颜色更浅 */
+            font-size: 0.95em; /* 字体稍小 */
+            margin-bottom: 5px; 
         }
         .timeline-item .event { 
-            color: #34495e; 
-            font-size: 1.1em; 
-            margin: 5px 0; 
+            color: #2c3e50; /* 颜色更深 */
+            font-size: 1.2em; /* 字体更大 */
+            font-weight: bold; /* 加粗 */
+            margin-bottom: 5px; 
         }
         .timeline-item .added-by { 
             color: #e67e22; 
-            font-size: 0.95em; 
-            margin-top: 5px; 
+            font-size: 0.85em; /* 字体稍小 */
+        }
+        .timeline-item .actions { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
         }
         .timeline-item .delete-btn { 
             background: #e74c3c; 
             color: white; 
             border: none; 
-            padding: 8px 15px; 
+            padding: 6px 12px; 
             border-radius: 6px; 
             cursor: pointer; 
-            font-size: 0.9em; 
+            font-size: 0.85em; 
             transition: background 0.3s ease; 
-            margin-left: 10px; 
         }
         .timeline-item .delete-btn:hover { 
             background: #c0392b; 
         }
         .timeline-item .checkbox { 
-            margin-right: 10px; 
-            transform: scale(1.2); 
+            transform: scale(1.1); 
         }
         .timeline-item.completed .event { 
             text-decoration: line-through; 
@@ -255,67 +257,102 @@
         .calendar-grid { 
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
-            gap: 3px; /* 减小间距 */
+            gap: 5px; 
         }
         .calendar-day { 
             background: #f9fbfc; 
-            padding: 5px; /* 减小内边距 */
+            padding: 5px; 
             border-radius: 5px; 
-            min-height: 60px; /* 减小最小高度 */
+            height: 140px; 
+            overflow-y: auto; 
             border: 1px solid #dfe6e9; 
             font-size: 0.9em; 
+            position: relative; 
         }
         .calendar-day.header { 
             background: #1e90ff; 
             color: white; 
             text-align: center; 
             font-weight: bold; 
+            height: 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
         }
         .calendar-day.empty { 
             background: #ecf0f1; 
         }
         .calendar-day.today { 
             border: 2px solid #1e90ff; 
+            background: #e6f0fa; 
+        }
+        .calendar-day .day-number { 
+            position: absolute; 
+            top: 5px; 
+            left: 5px; 
+            font-weight: bold; 
+            color: #2c3e50; 
         }
         .calendar-event { 
-            background: #e6f0fa; 
-            padding: 5px; 
-            margin-top: 5px; 
-            border-radius: 3px; 
+            background: #f9fbfc; 
+            padding: 4px; 
+            margin: 2px 0; 
+            border-radius: 5px; 
             font-size: 0.85em; 
             display: flex; 
             align-items: center; 
-            gap: 5px; 
+            gap: 6px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            position: relative; 
+            top: 20px; 
+            cursor: pointer; 
+            transition: background 0.3s ease; 
+        }
+        .calendar-event:hover { 
+            background: #e6f0fa; 
         }
         .calendar-event.completed { 
-            text-decoration: line-through; 
+            background: #e6f0fa; 
             color: #7f8c8d; 
         }
+        .calendar-event.completed .event-text { 
+            text-decoration: line-through; 
+        }
         .calendar-event .avatar { 
-            width: 20px; 
-            height: 20px; 
+            width: 24px; 
+            height: 24px; 
             font-size: 0.8em; 
+            flex-shrink: 0; 
+            border-radius: 50%; 
+            color: white; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
         }
-        .calendar-event .delete-btn { 
-            padding: 3px 6px; 
-            font-size: 0.7em; 
+        .calendar-event .content { 
+            flex-grow: 1; 
+            min-width: 0; 
         }
-        .calendar-event .checkbox { 
-            transform: scale(0.8); 
+        .calendar-event .event-text { 
+            color: #34495e; 
+            font-size: 0.85em; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            margin-bottom: 2px; 
+        }
+        .calendar-event .added-by { 
+            color: #e67e22; 
+            font-size: 0.75em; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
         }
         .calendar-day.selected {
             background-color: #a0c4ff;
         }
-        .log-item { 
-            padding: 10px; 
-            border-bottom: 1px solid #ecf0f1; 
-            font-size: 0.95em; 
-            color: #34495e; 
-        }
-        .log-item:last-child { 
-            border-bottom: none; 
-        }
-        /* 日期选择器弹窗样式 */
+        /* 日程详情模态框样式 */
         .modal { 
             display: none; 
             position: fixed; 
@@ -328,37 +365,112 @@
         }
         .modal-content { 
             background: white; 
-            padding: 15px; /* 减小内边距 */
+            padding: 15px; 
             border-radius: 10px; 
             width: 90%; 
-            max-width: 350px; /* 减小最大宽度 */
-            max-height: 80vh; /* 设置最大高度 */
-            overflow-y: auto; /* 内容超出时可滚动 */
+            max-width: 400px; 
+            max-height: 80vh; 
+            overflow-y: auto; 
             position: absolute; 
-            top: 50%; /* 垂直居中 */
+            top: 50%; 
             left: 50%; 
-            transform: translate(-50%, -50%); /* 居中调整 */
+            transform: translate(-50%, -50%); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
         }
         .modal-content h3 { 
-            margin-bottom: 10px; /* 减小间距 */
+            margin-bottom: 10px; 
             color: #1e3a8a; 
-            font-size: 1.2em; /* 减小标题字体 */
+            font-size: 1.2em; 
         }
         .modal-content .form-group { 
-            margin-bottom: 10px; /* 减小间距 */
+            margin-bottom: 10px; 
         }
         .modal-content button { 
             width: 48%; 
             margin: 0 1%; 
-            padding: 8px; /* 减小按钮内边距 */
-            font-size: 0.9em; /* 减小按钮字体 */
+            padding: 8px; 
+            font-size: 0.9em; 
         }
         .modal-content button.cancel { 
             background: #e74c3c; 
         }
         .modal-content button.cancel:hover { 
             background: #c0392b; 
+        }
+        .schedule-detail-modal .modal-content { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+        .schedule-detail-modal .detail-item { 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 10px; 
+        }
+        .schedule-detail-modal .avatar { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            color: white; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+            font-size: 1.2em; 
+        }
+        .schedule-detail-modal .content { 
+            flex-grow: 1; 
+        }
+        .schedule-detail-modal .time-range { 
+            color: #7f8c8d; /* 与时间线视图一致 */
+            font-size: 0.95em; /* 字体稍小 */
+            margin-bottom: 5px; 
+        }
+        .schedule-detail-modal .event-text { 
+            color: #2c3e50; /* 与时间线视图一致 */
+            font-size: 1.2em; /* 字体更大 */
+            font-weight: bold; /* 加粗 */
+            margin-bottom: 5px; 
+        }
+        .schedule-detail-modal .added-by { 
+            color: #e67e22; 
+            font-size: 0.85em; /* 字体稍小 */
+        }
+        .schedule-detail-modal .actions { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin-top: 10px; 
+        }
+        .schedule-detail-modal .delete-btn { 
+            background: #e74c3c; 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.85em; 
+            transition: background 0.3s ease; 
+        }
+        .schedule-detail-modal .delete-btn:hover { 
+            background: #c0392b; 
+        }
+        .schedule-detail-modal .checkbox { 
+            transform: scale(1.1); 
+        }
+        .schedule-detail-modal.completed .event-text { 
+            text-decoration: line-through; 
+            color: #7f8c8d; 
+        }
+        .log-item { 
+            padding: 10px; 
+            border-bottom: 1px solid #ecf0f1; 
+            font-size: 0.95em; 
+            color: #34495e; 
+        }
+        .log-item:last-child { 
+            border-bottom: none; 
         }
         /* 移动端优化 */
         @media (max-width: 600px) { 
@@ -385,6 +497,7 @@
             } 
             .timeline-item { 
                 padding: 15px; 
+                gap: 8px; 
             } 
             .timeline-item::before { 
                 left: -32px; 
@@ -397,36 +510,49 @@
                 font-size: 1em; 
             } 
             .timeline-item .date-time { 
-                font-size: 1em; 
+                font-size: 0.85em; /* 移动端稍小 */
             } 
-            .timeline-item .event, .timeline-item .added-by { 
-                font-size: 0.9em; 
+            .timeline-item .event { 
+                font-size: 1.1em; /* 移动端稍小 */
+            } 
+            .timeline-item .added-by { 
+                font-size: 0.75em; /* 移动端稍小 */
             } 
             .timeline-item .delete-btn { 
-                padding: 6px 10px; 
+                padding: 5px 10px; 
                 font-size: 0.8em; 
             } 
             .calendar-grid { 
                 grid-template-columns: repeat(7, 1fr); 
-                gap: 2px; /* 进一步减小间距 */
+                gap: 3px; 
             } 
             .calendar-day { 
-                padding: 3px; /* 进一步减小内边距 */
-                min-height: 50px; /* 进一步减小高度 */
+                padding: 3px; 
+                height: 120px; 
                 font-size: 0.8em; 
+            } 
+            .calendar-day.header { 
+                height: 30px; 
+                font-size: 0.9em; 
+            } 
+            .calendar-day .day-number { 
+                font-size: 0.9em; 
             } 
             .calendar-event { 
                 padding: 3px; 
                 font-size: 0.75em; 
+                gap: 4px; 
             } 
             .calendar-event .avatar { 
-                width: 15px; 
-                height: 15px; 
+                width: 20px; 
+                height: 20px; 
                 font-size: 0.7em; 
             } 
-            .calendar-event .delete-btn { 
-                padding: 2px 4px; 
-                font-size: 0.6em; 
+            .calendar-event .event-text { 
+                font-size: 0.75em; 
+            } 
+            .calendar-event .added-by { 
+                font-size: 0.65em; 
             } 
             .log-item { 
                 font-size: 0.85em; 
@@ -440,16 +566,37 @@
             } 
             .modal-content { 
                 width: 95%; 
-                max-width: 300px; /* 移动端进一步减小宽度 */
-                max-height: 70vh; /* 移动端减小高度 */
-                padding: 10px; /* 减小内边距 */
+                max-width: 300px; 
+                max-height: 70vh; 
+                padding: 10px; 
             } 
             .modal-content h3 { 
-                font-size: 1em; /* 移动端减小标题字体 */
+                font-size: 1em; 
             } 
             .modal-content button { 
-                font-size: 0.8em; /* 移动端减小按钮字体 */
-                padding: 6px; /* 减小按钮内边距 */
+                font-size: 0.8em; 
+                padding: 6px; 
+            } 
+            .schedule-detail-modal .modal-content { 
+                max-width: 280px; 
+            } 
+            .schedule-detail-modal .avatar { 
+                width: 30px; 
+                height: 30px; 
+                font-size: 1em; 
+            } 
+            .schedule-detail-modal .time-range { 
+                font-size: 0.85em; /* 移动端稍小 */
+            } 
+            .schedule-detail-modal .event-text { 
+                font-size: 1.1em; /* 移动端稍小 */
+            } 
+            .schedule-detail-modal .added-by { 
+                font-size: 0.75em; /* 移动端稍小 */
+            } 
+            .schedule-detail-modal .delete-btn { 
+                padding: 5px 10px; 
+                font-size: 0.8em; 
             } 
         }
     </style>
@@ -514,6 +661,15 @@
         </div>
     </div>
 
+    <!-- 日程详情模态框 -->
+    <div class="modal schedule-detail-modal" id="scheduleDetailModal">
+        <div class="modal-content">
+            <h3>日程详情</h3>
+            <div id="scheduleDetailContent"></div>
+            <button class="cancel" onclick="closeScheduleDetailModal()">关闭</button>
+        </div>
+    </div>
+
     <!-- 日程列表 -->
     <div class="schedule-list" id="scheduleList" style="display: none;">
         <h2><i class="fas fa-list"></i> 日程列表</h2>
@@ -525,7 +681,6 @@
                 <option value="冯妈妈">冯妈妈</option>
                 <option value="张宝宝">张宝宝</option>
                 <option value="懒宝">懒宝</option>
-                <option value="系统">系统</option>
             </select>
             <div class="view-toggle">
                 <button id="calendarViewBtn" onclick="switchView('calendar')">日历视图</button>
@@ -628,6 +783,15 @@
             } else {
                 console.error("未找到 verifyButton 元素");
             }
+
+            // 点击模态框外部关闭
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
         });
 
         // 页面加载
@@ -639,7 +803,7 @@
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             const tomorrowEnd = new Date(tomorrow);
-            tomorrowEnd.setHours(tomorrowEnd.getHours() + 1);
+            tomorrowEnd.setHours(tomorrow.getHours() + 1);
             document.getElementById('datetimeDisplay').value = `${tomorrow.toLocaleString('zh-CN', {
                 year: 'numeric', month: '2-digit', day: '2-digit',
                 hour: '2-digit', minute: '2-digit'
@@ -670,6 +834,53 @@
             modalSelectedStart = null;
             modalSelectedEnd = null;
             document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('selected'));
+        }
+
+        // 打开日程详情模态框
+        function openScheduleDetailModal(schedule) {
+            const modal = document.getElementById('scheduleDetailModal');
+            const content = document.getElementById('scheduleDetailContent');
+            const startDate = new Date(schedule.startDatetime);
+            const endDate = new Date(schedule.endDatetime);
+            const avatar = {
+                '吴乐乐': { color: '#e74c3c', initial: '吴' },
+                '冯妈妈': { color: '#3498db', initial: '冯' },
+                '张宝宝': { color: '#2ecc71', initial: '张' },
+                '懒宝': { color: '#f1c40f', initial: '懒' }
+            }[schedule.user] || { color: '#95a5a6', initial: schedule.user[0] };
+
+            const startFormatted = startDate.toLocaleString('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit',
+                timeZone: 'Asia/Shanghai'
+            });
+            const endFormatted = endDate.toLocaleString('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit',
+                timeZone: 'Asia/Shanghai'
+            });
+
+            content.innerHTML = `
+                <div class="detail-item ${schedule.completed ? 'completed' : ''}">
+                    <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
+                    <div class="content">
+                        <div class="time-range">${startFormatted} 至 ${endFormatted}</div>
+                        <div class="event-text">事件: ${schedule.event}</div>
+                        <div class="added-by">添加者: ${schedule.user}</div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <input type="checkbox" class="checkbox" ${schedule.completed ? 'checked' : ''} onchange="toggleComplete('${schedule.id}', this)">
+                    <button class="delete-btn" onclick="deleteSchedule('${schedule.id}', '${schedule.event}', '${startFormatted} 至 ${endFormatted}')"><i class="fas fa-trash-alt"></i> 删除</button>
+                </div>
+            `;
+            modal.style.display = 'block';
+        }
+
+        // 关闭日程详情模态框
+        function closeScheduleDetailModal() {
+            const modal = document.getElementById('scheduleDetailModal');
+            modal.style.display = 'none';
         }
 
         // 切换模态框月份
@@ -823,6 +1034,8 @@
                 document.getElementById('logList').style.display = 'block';
                 loadSchedules();
                 loadLogs();
+                // 登录后立即清理系统日程
+                cleanSystemSchedules();
             }).catch((error) => {
                 console.error("登录失败:", error);
                 alert("登录失败: " + error.message);
@@ -928,7 +1141,6 @@
                         }
                     });
                 }
-                loadHolidays();
                 filterSchedules();
             }, (error) => {
                 console.error('加载数据失败:', error);
@@ -936,38 +1148,21 @@
             });
         }
 
-        // 加载节假日（支持时间段）
-        function loadHolidays() {
-            const now = new Date();
-            const holidays = [
-                { start: '2025-01-01T00:00:00.000Z', end: '2025-01-01T23:59:59.000Z', event: '元旦' },
-                { start: '2025-01-28T00:00:00.000Z', end: '2025-01-28T23:59:59.000Z', event: '春节前夕' },
-                { start: '2025-01-29T00:00:00.000Z', end: '2025-02-04T23:59:59.000Z', event: '春节' },
-                { start: '2025-02-14T00:00:00.000Z', end: '2025-02-14T23:59:59.000Z', event: '情人节' },
-                { start: '2025-04-04T00:00:00.000Z', end: '2025-04-04T23:59:59.000Z', event: '清明节' },
-                { start: '2025-05-01T00:00:00.000Z', end: '2025-05-01T23:59:59.000Z', event: '劳动节' },
-                { start: '2025-06-01T00:00:00.000Z', end: '2025-06-01T23:59:59.000Z', event: '儿童节' },
-                { start: '2025-06-30T00:00:00.000Z', end: '2025-06-30T23:59:59.000Z', event: '端午节' },
-                { start: '2025-10-01T00:00:00.000Z', end: '2025-10-07T23:59:59.000Z', event: '国庆节' },
-                { start: '2025-10-06T00:00:00.000Z', end: '2025-10-06T23:59:59.000Z', event: '中秋节' }
-            ];
-            holidays.forEach(holiday => {
-                const startDate = new Date(holiday.start);
-                const endDate = new Date(holiday.end);
-                if (startDate >= now && !schedules.some(s => s.startDatetime.getTime() === startDate.getTime() && s.event === holiday.event)) {
-                    schedules.push({
-                        startDatetime: startDate,
-                        endDatetime: endDate,
-                        event: holiday.event,
-                        user: '系统',
-                        completed: false
-                    });
-                    schedulesRef.push({
-                        startDatetime: startDate.toISOString(),
-                        endDatetime: endDate.toISOString(),
-                        event: holiday.event,
-                        user: '系统',
-                        completed: false
+        // 清理系统日程（user: '系统'）
+        function cleanSystemSchedules() {
+            schedulesRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        const schedule = data[key];
+                        if (schedule.user === '系统') {
+                            schedulesRef.child(key).remove().then(() => {
+                                console.log(`已删除系统日程: ${schedule.event}`);
+                                logAction('删除系统日程', `事件: ${schedule.event}, 时间: ${new Date(schedule.startDatetime).toLocaleString('zh-CN')} 至 ${new Date(schedule.endDatetime).toLocaleString('zh-CN')}`);
+                            }).catch((error) => {
+                                console.error(`删除系统日程失败: ${schedule.event}`, error);
+                            });
+                        }
                     });
                 }
             });
@@ -1019,7 +1214,7 @@
             renderCalendar(schedules);
         }
 
-        // 渲染日历视图
+        // 渲染日历视图（点击弹出模态框）
         function renderCalendar(filteredSchedules) {
             const calendarGrid = document.getElementById('calendarGrid');
             const calendarMonth = document.getElementById('calendarMonth');
@@ -1062,7 +1257,11 @@
                     currentDate.getFullYear() === today.getFullYear()) {
                     dayDiv.classList.add('today');
                 }
-                dayDiv.innerHTML = `<strong>${day}</strong>`;
+                // 添加日期数字
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayDiv.appendChild(dayNumber);
 
                 // 查找该日期的日程
                 filteredSchedules.forEach(schedule => {
@@ -1072,8 +1271,7 @@
                     const currentDateEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
 
                     if (startDate <= currentDateEnd && endDate >= currentDateStart) {
-                        const isSystem = schedule.user === '系统';
-                        const avatar = isSystem ? { color: '#95a5a6', initial: '节' } : {
+                        const avatar = {
                             '吴乐乐': { color: '#e74c3c', initial: '吴' },
                             '冯妈妈': { color: '#3498db', initial: '冯' },
                             '张宝宝': { color: '#2ecc71', initial: '张' },
@@ -1084,10 +1282,15 @@
                         eventDiv.className = `calendar-event ${schedule.completed ? 'completed' : ''}`;
                         eventDiv.innerHTML = `
                             <div class="avatar" style="background-color: ${avatar.color}">${avatar.initial}</div>
-                            <span>${schedule.event}</span>
-                            <input type="checkbox" class="checkbox" ${schedule.completed ? 'checked' : ''} onchange="toggleComplete('${schedule.id}', this)">
-                            ${!isSystem ? `<button class="delete-btn" onclick="deleteSchedule('${schedule.id}', '${schedule.event}', '${startDate.toLocaleString('zh-CN')} 至 ${endDate.toLocaleString('zh-CN')}')"><i class="fas fa-trash-alt"></i></button>` : ''}
+                            <div class="content">
+                                <div class="event-text">${schedule.event}</div>
+                                <div class="added-by">添加者: ${schedule.user}</div>
+                            </div>
                         `;
+                        // 添加点击事件，弹出模态框
+                        eventDiv.addEventListener('click', () => {
+                            openScheduleDetailModal(schedule);
+                        });
                         dayDiv.appendChild(eventDiv);
                     }
                 });
@@ -1110,16 +1313,17 @@
                 const startFormatted = isValidDate(startDate) ? startDate.toLocaleString('zh-CN', {
                     year: 'numeric', month: '2-digit', day: '2-digit',
                     hour: '2-digit', minute: '2-digit',
-                    weekday: 'long'
+                    weekday: 'long',
+                    timeZone: 'Asia/Shanghai'
                 }) : '未知日期';
                 const endFormatted = isValidDate(endDate) ? endDate.toLocaleString('zh-CN', {
                     year: 'numeric', month: '2-digit', day: '2-digit',
                     hour: '2-digit', minute: '2-digit',
-                    weekday: 'long'
+                    weekday: 'long',
+                    timeZone: 'Asia/Shanghai'
                 }) : '未知日期';
 
-                const isSystem = schedule.user === '系统';
-                const avatar = isSystem ? { color: '#95a5a6', initial: '节' } : {
+                const avatar = {
                     '吴乐乐': { color: '#e74c3c', initial: '吴' },
                     '冯妈妈': { color: '#3498db', initial: '冯' },
                     '张宝宝': { color: '#2ecc71', initial: '张' },
@@ -1135,8 +1339,10 @@
                         <div class="event">事件: ${schedule.event}</div>
                         <div class="added-by">添加者: ${schedule.user}</div>
                     </div>
-                    <input type="checkbox" class="checkbox" ${schedule.completed ? 'checked' : ''} onchange="toggleComplete('${schedule.id}', this)">
-                    ${!isSystem ? `<button class="delete-btn" onclick="deleteSchedule('${schedule.id}', '${schedule.event}', '${startFormatted} 至 ${endFormatted}')"><i class="fas fa-trash-alt"></i> 删除</button>` : ''}
+                    <div class="actions">
+                        <input type="checkbox" class="checkbox" ${schedule.completed ? 'checked' : ''} onchange="toggleComplete('${schedule.id}', this)">
+                        <button class="delete-btn" onclick="deleteSchedule('${schedule.id}', '${schedule.event}', '${startFormatted} 至 ${endFormatted}')"><i class="fas fa-trash-alt"></i> 删除</button>
+                    </div>
                 `;
                 timeline.appendChild(timelineItem);
             });
@@ -1190,6 +1396,10 @@
             schedulesRef.child(id).update({ completed: checkbox.checked }).then(() => {
                 const schedule = schedules.find(s => s.id === id);
                 logAction('标记日程', `事件: ${schedule.event}, 状态: ${checkbox.checked ? '已完成' : '未完成'}`);
+                closeScheduleDetailModal(); // 关闭模态框
+            }).catch((error) => {
+                console.error("更新完成状态失败:", error);
+                alert("更新完成状态失败: " + error.message);
             });
         }
 
@@ -1199,8 +1409,18 @@
                 alert('请先登录！');
                 return;
             }
+            console.log("尝试删除日程，ID:", id); // 调试日志
+            if (!id) {
+                alert('日程 ID 无效，无法删除！');
+                return;
+            }
             schedulesRef.child(id).remove().then(() => {
+                console.log("日程删除成功，ID:", id);
                 logAction('删除日程', `事件: ${event}, 时间: ${datetime}`);
+                closeScheduleDetailModal(); // 关闭模态框
+            }).catch((error) => {
+                console.error("删除日程失败:", error);
+                alert("删除日程失败: " + error.message);
             });
         }
     </script>
